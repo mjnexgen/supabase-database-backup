@@ -251,7 +251,8 @@ d7743ba7-2ba0-4138-b2d0-3bbb4496ab23	user_30Y38ObJ8quelJ4zr5L76kevhUw	powewek822
 50e00505-a37a-48ef-a0d2-48195ec1ee7e	user_31VRkdbM4FVnBzA1ZPMv7mpApQo	dowova3718@euleina.com	Soumya Ranjan	Behera	\N	https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18yeTJqZ0p4UHo1UlZvSWtEaFF2MVNwQkh4Zm4iLCJyaWQiOiJ1c2VyXzMxVlJrZGJNNEZWbkJ6QTFaUE12N21wQXBRbyIsImluaXRpYWxzIjoiU0IifQ	\N	\N	t	f	\N	2025-08-19 12:43:25.086+00	2025-08-19 12:43:25.086+00	\N	\N	\N	f	\N
 696f1731-470f-45a5-90f0-878868643eb2	user_31VVK4UTuf8OXi7aY2kwUpmdM3n	a.meena@ishvaratech.com	Akash	Meena	\N	https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18yeTJqZ0p4UHo1UlZvSWtEaFF2MVNwQkh4Zm4iLCJyaWQiOiJ1c2VyXzMxVlZLNFVUdWY4T1hpN2FZMmt3VXBtZE0zbiIsImluaXRpYWxzIjoiQU0ifQ	\N	\N	t	f	\N	2025-08-19 13:12:55.86+00	2025-08-19 13:12:55.86+00	\N	\N	\N	f	\N
 7312b02a-da31-4a70-8d1d-198cc69d44fb	user_31VYN3JJZqRNzNhE5gpQTd2omka	debi.prasad@ishvaratech.com	Debi Prasad	Pradhan	\N	https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18yeTJqZ0p4UHo1UlZvSWtEaFF2MVNwQkh4Zm4iLCJyaWQiOiJ1c2VyXzMxVllOM0pKWnFSTnpOaEU1Z3BRVGQyb21rYSIsImluaXRpYWxzIjoiRFAifQ	\N	\N	t	f	\N	2025-08-19 13:38:00.25+00	2025-08-19 13:38:00.25+00	\N	\N	\N	f	\N
-d3b54e68-a52a-475b-a942-e5d4cbee8b4a	user_31Vgx3l00KuPfRYYK5wnuLal8sI	biswajit.padhan@ishvaratech.com	Biswajit	Padhan	\N	https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18yeTJqZ0p4UHo1UlZvSWtEaFF2MVNwQkh4Zm4iLCJyaWQiOiJ1c2VyXzMxVmd4M2wwMEt1UGZSWVlLNXdudUxhbDhzSSIsImluaXRpYWxzIjoiQlAifQ	\N	\N	t	f	\N	2025-08-19 14:48:36.382+00	2025-08-19 14:48:36.382+00	\N	\N	\N	f	\N
+2d12d756-1512-4ea5-88ee-123984c58d77	user_31XpWitPzz0XjCOEbEpeRB0g8G2	nitin.gupta@nexgenai.io	Nitin	Gupta	\N	https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18yeTJqZ0p4UHo1UlZvSWtEaFF2MVNwQkh4Zm4iLCJyaWQiOiJ1c2VyXzMxWHBXaXRQenowWGpDT0ViRXBlUkIwZzhHMiIsImluaXRpYWxzIjoiTkcifQ	https://www.gravatar.com/avatar?d=mp	\N	t	f	1970-01-01 00:00:00+00	2025-08-20 08:58:24.267+00	2025-08-20 08:58:24.298+00	idn_31XpUNGUWxVsEeuWK6ENdCVDLzY	\N	\N	f	\N
+d3b54e68-a52a-475b-a942-e5d4cbee8b4a	user_31Vgx3l00KuPfRYYK5wnuLal8sI	biswajit.padhan@ishvaratech.com	Biswajit	Padhan	\N	https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18yeTJqZ0p4UHo1UlZvSWtEaFF2MVNwQkh4Zm4iLCJyaWQiOiJ1c2VyXzMxVmd4M2wwMEt1UGZSWVlLNXdudUxhbDhzSSIsImluaXRpYWxzIjoiQlAifQ	\N	\N	t	f	\N	2025-08-19 14:48:36.382+00	2025-08-19 14:48:36.382+00	\N	\N	\N	f	ca122d96-c991-406c-8154-70e8ec25a7f7
 \.
 
 
@@ -1322,7 +1323,7 @@ COPY "public"."invoices" ("id", "org_id", "invoice_number", "amount", "currency"
 --
 
 COPY "public"."iqm_configurations" ("id", "workspace_id", "api_credentials", "default_settings", "viewability_settings", "status", "last_sync_at", "created_at", "updated_at") FROM stdin;
-0e5d2bad-1df0-446b-aba6-3946dcfd214d	2148	{"email": "nitin.gupta@nexgenai.io", "headers": {"Accept": "application/json", "X-Iaa-Host": "app.iqm.com", "Content-Type": "application/json", "Authorization": "Basic cmF3LmdvcDpna0JkSEtDblU2RFdiSjlMTw=="}, "password": "%eZE6GKK>qru8qA>", "grantType": "password"}	{}	{}	active	2025-08-19 14:48:38.088+00	2025-07-01 17:11:32.374154+00	2025-08-19 14:48:38.09+00
+0e5d2bad-1df0-446b-aba6-3946dcfd214d	2148	{"email": "nitin.gupta@nexgenai.io", "headers": {"Accept": "application/json", "X-Iaa-Host": "app.iqm.com", "Content-Type": "application/json", "Authorization": "Basic cmF3LmdvcDpna0JkSEtDblU2RFdiSjlMTw=="}, "password": "%eZE6GKK>qru8qA>", "grantType": "password"}	{}	{}	active	2025-08-20 17:02:39.874+00	2025-07-01 17:11:32.374154+00	2025-08-20 17:02:39.875+00
 \.
 
 
