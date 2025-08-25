@@ -553,6 +553,16 @@ CREATE TYPE "public"."report_type" AS ENUM (
 ALTER TYPE "public"."report_type" OWNER TO "postgres";
 
 
+CREATE TYPE "public"."setting_scope" AS ENUM (
+    'PLATFORM',
+    'ORGANIZATION',
+    'USER'
+);
+
+
+ALTER TYPE "public"."setting_scope" OWNER TO "postgres";
+
+
 CREATE TYPE "public"."third_party_service" AS ENUM (
     'clerk',
     'supabase',
@@ -1668,6 +1678,24 @@ CREATE TABLE IF NOT EXISTS "public"."roles" (
 ALTER TABLE "public"."roles" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."settings" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "scope" "public"."setting_scope" DEFAULT 'PLATFORM'::"public"."setting_scope" NOT NULL,
+    "scope_id" "uuid",
+    "key" "text" NOT NULL,
+    "value" "jsonb" NOT NULL,
+    "category" "text",
+    "metadata" "jsonb",
+    "created_by" "uuid",
+    "updated_by" "uuid",
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."settings" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."targeting_criteria" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "platform_specific_campaign_id" "uuid",
@@ -2229,6 +2257,11 @@ ALTER TABLE ONLY "public"."roles"
 
 
 
+ALTER TABLE ONLY "public"."settings"
+    ADD CONSTRAINT "settings_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."targeting_criteria"
     ADD CONSTRAINT "targeting_criteria_pkey" PRIMARY KEY ("id");
 
@@ -2528,6 +2561,22 @@ CREATE INDEX "real_time_metrics_timestamp_idx" ON "public"."real_time_metrics" U
 
 
 CREATE UNIQUE INDEX "roles_name_key" ON "public"."roles" USING "btree" ("name");
+
+
+
+CREATE INDEX "settings_category_idx" ON "public"."settings" USING "btree" ("category");
+
+
+
+CREATE INDEX "settings_key_idx" ON "public"."settings" USING "btree" ("key");
+
+
+
+CREATE INDEX "settings_scope_scope_id_idx" ON "public"."settings" USING "btree" ("scope", "scope_id");
+
+
+
+CREATE UNIQUE INDEX "settings_scope_scope_id_key_key" ON "public"."settings" USING "btree" ("scope", "scope_id", "key");
 
 
 
