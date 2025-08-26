@@ -165,7 +165,9 @@ ALTER TYPE "public"."audience_status" OWNER TO "postgres";
 CREATE TYPE "public"."audience_type" AS ENUM (
     'segmented',
     'contextual',
-    'geofarmed'
+    'geofarmed',
+    'retargeted',
+    'lookalike'
 );
 
 
@@ -809,7 +811,10 @@ CREATE TABLE IF NOT EXISTS "public"."audiences" (
     "targeting_data" "jsonb",
     "size" integer,
     "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "end_date" timestamp(3) without time zone,
+    "period" "text",
+    "start_date" timestamp(3) without time zone
 );
 
 
@@ -3706,6 +3711,10 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."reports" TO "service_role";
 
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."roles" TO "service_role";
+
+
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."settings" TO "service_role";
 
 
 
