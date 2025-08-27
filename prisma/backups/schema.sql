@@ -1701,6 +1701,22 @@ CREATE TABLE IF NOT EXISTS "public"."settings" (
 ALTER TABLE "public"."settings" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."sidebar_sections" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "section_id" integer NOT NULL,
+    "heading_text" character varying(100) NOT NULL,
+    "section_icon" character varying(100) NOT NULL,
+    "tooltip_text" character varying(100) NOT NULL,
+    "roles" "text"[],
+    "is_active" boolean DEFAULT true NOT NULL,
+    "created_at" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."sidebar_sections" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."targeting_criteria" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "platform_specific_campaign_id" "uuid",
@@ -1806,7 +1822,10 @@ CREATE TABLE IF NOT EXISTS "public"."user_preferences" (
     "notification_settings" "jsonb" DEFAULT '{"sms": false, "push": true, "email": true}'::"jsonb",
     "dashboard_layout" "jsonb",
     "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "currency" "text" DEFAULT 'USD'::"text",
+    "iqm_timezone_id" integer,
+    "timezone_name" "text" DEFAULT 'UTC'::"text"
 );
 
 
@@ -2267,6 +2286,11 @@ ALTER TABLE ONLY "public"."settings"
 
 
 
+ALTER TABLE ONLY "public"."sidebar_sections"
+    ADD CONSTRAINT "sidebar_sections_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."targeting_criteria"
     ADD CONSTRAINT "targeting_criteria_pkey" PRIMARY KEY ("id");
 
@@ -2582,6 +2606,18 @@ CREATE INDEX "settings_scope_scope_id_idx" ON "public"."settings" USING "btree" 
 
 
 CREATE UNIQUE INDEX "settings_scope_scope_id_key_key" ON "public"."settings" USING "btree" ("scope", "scope_id", "key");
+
+
+
+CREATE INDEX "sidebar_sections_roles_idx" ON "public"."sidebar_sections" USING "btree" ("roles");
+
+
+
+CREATE INDEX "sidebar_sections_section_id_idx" ON "public"."sidebar_sections" USING "btree" ("section_id");
+
+
+
+CREATE UNIQUE INDEX "sidebar_sections_section_id_key" ON "public"."sidebar_sections" USING "btree" ("section_id");
 
 
 
