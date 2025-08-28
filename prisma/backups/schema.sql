@@ -382,6 +382,19 @@ CREATE TYPE "public"."invoice_status" AS ENUM (
 ALTER TYPE "public"."invoice_status" OWNER TO "postgres";
 
 
+CREATE TYPE "public"."io_funding_status" AS ENUM (
+    'draft',
+    'awaiting_payment',
+    'funded',
+    'partially_refunded',
+    'refunded',
+    'canceled'
+);
+
+
+ALTER TYPE "public"."io_funding_status" OWNER TO "postgres";
+
+
 CREATE TYPE "public"."log_level" AS ENUM (
     'debug',
     'info',
@@ -478,6 +491,30 @@ CREATE TYPE "public"."organization_type" AS ENUM (
 ALTER TYPE "public"."organization_type" OWNER TO "postgres";
 
 
+CREATE TYPE "public"."payment_log_type" AS ENUM (
+    'initial',
+    'topup',
+    'adjustment'
+);
+
+
+ALTER TYPE "public"."payment_log_type" OWNER TO "postgres";
+
+
+CREATE TYPE "public"."payment_status" AS ENUM (
+    'pending',
+    'requires_action',
+    'processing',
+    'succeeded',
+    'failed',
+    'canceled',
+    'refunded'
+);
+
+
+ALTER TYPE "public"."payment_status" OWNER TO "postgres";
+
+
 CREATE TYPE "public"."payment_type" AS ENUM (
     'card',
     'bank_account',
@@ -510,6 +547,32 @@ CREATE TYPE "public"."platform_campaign_status" AS ENUM (
 
 
 ALTER TYPE "public"."platform_campaign_status" OWNER TO "postgres";
+
+
+CREATE TYPE "public"."refund_reason" AS ENUM (
+    'requested_by_customer',
+    'duplicate',
+    'fraudulent',
+    'campaign_cancelled',
+    'io_cancelled',
+    'unused_budget',
+    'service_issue'
+);
+
+
+ALTER TYPE "public"."refund_reason" OWNER TO "postgres";
+
+
+CREATE TYPE "public"."refund_status" AS ENUM (
+    'pending',
+    'processing',
+    'succeeded',
+    'failed',
+    'cancelled'
+);
+
+
+ALTER TYPE "public"."refund_status" OWNER TO "postgres";
 
 
 CREATE TYPE "public"."relationship_type" AS ENUM (
@@ -612,6 +675,34 @@ ALTER TYPE "public"."transaction_type" OWNER TO "postgres";
 SET default_tablespace = '';
 
 SET default_table_access_method = "heap";
+
+
+CREATE TABLE IF NOT EXISTS "public"."WhiteLabelSettings" (
+    "customDomain" "text",
+    "subdomain" "text",
+    "faviconUrl" "text",
+    "logoUrl" "text",
+    "loginBackgroundUrl" "text",
+    "termsUrl" "text",
+    "privacyUrl" "text",
+    "supportUrl" "text",
+    "primaryColor" "text",
+    "secondaryColor" "text",
+    "description" "text",
+    "supportEmail" "text",
+    "contactEmail" "text",
+    "contactPhone" "text",
+    "address" "jsonb",
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL,
+    "orgId" "uuid" NOT NULL,
+    "userId" "uuid" NOT NULL,
+    "companyName" "text" NOT NULL,
+    "websiteUrl" "text" NOT NULL
+);
+
+
+ALTER TABLE "public"."WhiteLabelSettings" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."_prisma_migrations" (
@@ -902,6 +993,26 @@ CREATE TABLE IF NOT EXISTS "public"."campaign_steps" (
 ALTER TABLE "public"."campaign_steps" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."campaign_transactions" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "insertion_order_id" "uuid" NOT NULL,
+    "campaign_id" "uuid" NOT NULL,
+    "platform_campaign_id" "uuid",
+    "amount" numeric(15,2) NOT NULL,
+    "currency" "text" DEFAULT 'USD'::"text" NOT NULL,
+    "source_platform" "public"."platform",
+    "description" "text",
+    "external_reference" "text",
+    "metadata" "jsonb",
+    "occurred_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "synced_at" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."campaign_transactions" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."campaigns" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "org_id" "uuid" NOT NULL,
@@ -932,7 +1043,9 @@ CREATE TABLE IF NOT EXISTS "public"."campaigns" (
     "platform_budgets" "jsonb",
     "step_completed" integer DEFAULT 0,
     "submitted_at" timestamp(6) with time zone,
-    "submitted_by" "uuid"
+    "submitted_by" "uuid",
+    "campaign_funding_status" "public"."io_funding_status" DEFAULT 'awaiting_payment'::"public"."io_funding_status" NOT NULL,
+    "current_balance" numeric(15,2) DEFAULT 0 NOT NULL
 );
 
 
@@ -1177,7 +1290,9 @@ CREATE TABLE IF NOT EXISTS "public"."insertion_orders" (
     "iqm_distribution_method_id" integer,
     "platform_references" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
     "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "current_balance" numeric(15,2) DEFAULT 0 NOT NULL,
+    "io_funding_status" "public"."io_funding_status" DEFAULT 'awaiting_payment'::"public"."io_funding_status" NOT NULL
 );
 
 
@@ -1252,7 +1367,8 @@ CREATE TABLE IF NOT EXISTS "public"."iqm_campaigns" (
     "max_day_impressions" integer,
     "total_clicks" integer,
     "total_conversions" integer,
-    "total_impressions" integer
+    "total_impressions" integer,
+    "platform_audience_id" "text"
 );
 
 
@@ -1393,6 +1509,22 @@ CREATE TABLE IF NOT EXISTS "public"."onboarding_steps" (
 ALTER TABLE "public"."onboarding_steps" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."organization_branding" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "org_id" "uuid" NOT NULL,
+    "payment_header_text" "text",
+    "payment_footer_text" "text",
+    "trust_badges" "jsonb",
+    "payment_success_url" "text",
+    "payment_cancel_url" "text",
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."organization_branding" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."organization_details" (
     "org_id" "uuid" NOT NULL,
     "name" "text" NOT NULL,
@@ -1474,6 +1606,57 @@ CREATE TABLE IF NOT EXISTS "public"."organizations" (
 
 
 ALTER TABLE "public"."organizations" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."payment_allocations" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "payment_log_id" "uuid" NOT NULL,
+    "org_id" "uuid" NOT NULL,
+    "campaign_id" "uuid" NOT NULL,
+    "insertion_order_id" "uuid",
+    "amount_media" numeric(15,2) NOT NULL,
+    "fee_cpg" numeric(15,2) NOT NULL,
+    "tax_amount" numeric(15,2),
+    "amount_total" numeric(15,2) NOT NULL,
+    "currency" "text" DEFAULT 'USD'::"text" NOT NULL,
+    "status" "public"."payment_status" DEFAULT 'pending'::"public"."payment_status" NOT NULL,
+    "payment_type" "public"."payment_log_type" DEFAULT 'initial'::"public"."payment_log_type" NOT NULL,
+    "processed_at" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."payment_allocations" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."payment_logs" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "insertion_order_id" "uuid",
+    "org_id" "uuid" NOT NULL,
+    "amount_media" numeric(15,2) NOT NULL,
+    "fee_cpg" numeric(15,2) NOT NULL,
+    "tax_amount" numeric(15,2),
+    "amount_total" numeric(15,2) NOT NULL,
+    "currency" "text" DEFAULT 'USD'::"text" NOT NULL,
+    "status" "public"."payment_status" DEFAULT 'pending'::"public"."payment_status" NOT NULL,
+    "payment_type" "public"."payment_log_type" DEFAULT 'initial'::"public"."payment_log_type" NOT NULL,
+    "stripe_payment_intent_id" "text",
+    "stripe_charge_id" "text",
+    "stripe_invoice_id" "text",
+    "receipt_url" "text",
+    "processor_fees" numeric(15,2),
+    "failure_reason" "text",
+    "failure_code" "text",
+    "metadata" "jsonb",
+    "processed_at" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "campaign_id" "uuid"
+);
+
+
+ALTER TABLE "public"."payment_logs" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."payments" (
@@ -1651,6 +1834,31 @@ CREATE TABLE IF NOT EXISTS "public"."real_time_metrics" (
 ALTER TABLE "public"."real_time_metrics" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."refunds" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "payment_log_id" "uuid" NOT NULL,
+    "amount_media" numeric(15,2) NOT NULL,
+    "fee_cpg" numeric(15,2) NOT NULL,
+    "amount_total" numeric(15,2) NOT NULL,
+    "currency" "text" DEFAULT 'USD'::"text" NOT NULL,
+    "reason" "public"."refund_reason" NOT NULL,
+    "status" "public"."refund_status" DEFAULT 'pending'::"public"."refund_status" NOT NULL,
+    "description" "text",
+    "stripe_refund_id" "text",
+    "metadata" "jsonb",
+    "failure_reason" "text",
+    "refunded_by" "uuid",
+    "processed_at" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "campaign_id" "uuid",
+    "payment_allocation_id" "uuid"
+);
+
+
+ALTER TABLE "public"."refunds" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."reports" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "org_id" "uuid" NOT NULL,
@@ -1715,6 +1923,22 @@ CREATE TABLE IF NOT EXISTS "public"."sidebar_sections" (
 
 
 ALTER TABLE "public"."sidebar_sections" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."stripe_webhook_events" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "stripe_event_id" "text" NOT NULL,
+    "event_type" "text" NOT NULL,
+    "processed" boolean DEFAULT false NOT NULL,
+    "processed_at" timestamp(6) with time zone,
+    "attempts" integer DEFAULT 0 NOT NULL,
+    "event_data" "jsonb" NOT NULL,
+    "error_message" "text",
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."stripe_webhook_events" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."targeting_criteria" (
@@ -1901,24 +2125,6 @@ CREATE TABLE IF NOT EXISTS "public"."web3_wallets" (
 ALTER TABLE "public"."web3_wallets" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."white_label_settings" (
-    "org_id" "uuid" NOT NULL,
-    "custom_domain" "text",
-    "favicon_url" "text",
-    "login_background_url" "text",
-    "terms_url" "text",
-    "privacy_url" "text",
-    "support_email" "text",
-    "support_url" "text",
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "subdomain" "text"
-);
-
-
-ALTER TABLE "public"."white_label_settings" OWNER TO "postgres";
-
-
 CREATE TABLE IF NOT EXISTS "public"."x_analytics" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "x_campaign_id" "uuid",
@@ -2006,6 +2212,11 @@ CREATE TABLE IF NOT EXISTS "public"."x_line_items" (
 ALTER TABLE "public"."x_line_items" OWNER TO "postgres";
 
 
+ALTER TABLE ONLY "public"."WhiteLabelSettings"
+    ADD CONSTRAINT "WhiteLabelSettings_pkey" PRIMARY KEY ("orgId");
+
+
+
 ALTER TABLE ONLY "public"."_prisma_migrations"
     ADD CONSTRAINT "_prisma_migrations_pkey" PRIMARY KEY ("id");
 
@@ -2083,6 +2294,11 @@ ALTER TABLE ONLY "public"."campaign_creatives"
 
 ALTER TABLE ONLY "public"."campaign_steps"
     ADD CONSTRAINT "campaign_steps_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."campaign_transactions"
+    ADD CONSTRAINT "campaign_transactions_pkey" PRIMARY KEY ("id");
 
 
 
@@ -2201,6 +2417,11 @@ ALTER TABLE ONLY "public"."onboarding_steps"
 
 
 
+ALTER TABLE ONLY "public"."organization_branding"
+    ADD CONSTRAINT "organization_branding_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."organization_details"
     ADD CONSTRAINT "organization_details_pkey" PRIMARY KEY ("org_id");
 
@@ -2223,6 +2444,16 @@ ALTER TABLE ONLY "public"."organization_members"
 
 ALTER TABLE ONLY "public"."organizations"
     ADD CONSTRAINT "organizations_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."payment_allocations"
+    ADD CONSTRAINT "payment_allocations_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."payment_logs"
+    ADD CONSTRAINT "payment_logs_pkey" PRIMARY KEY ("id");
 
 
 
@@ -2271,6 +2502,11 @@ ALTER TABLE ONLY "public"."real_time_metrics"
 
 
 
+ALTER TABLE ONLY "public"."refunds"
+    ADD CONSTRAINT "refunds_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."reports"
     ADD CONSTRAINT "reports_pkey" PRIMARY KEY ("id");
 
@@ -2288,6 +2524,11 @@ ALTER TABLE ONLY "public"."settings"
 
 ALTER TABLE ONLY "public"."sidebar_sections"
     ADD CONSTRAINT "sidebar_sections_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."stripe_webhook_events"
+    ADD CONSTRAINT "stripe_webhook_events_pkey" PRIMARY KEY ("id");
 
 
 
@@ -2336,11 +2577,6 @@ ALTER TABLE ONLY "public"."web3_wallets"
 
 
 
-ALTER TABLE ONLY "public"."white_label_settings"
-    ADD CONSTRAINT "white_label_settings_pkey" PRIMARY KEY ("org_id");
-
-
-
 ALTER TABLE ONLY "public"."x_analytics"
     ADD CONSTRAINT "x_analytics_pkey" PRIMARY KEY ("id");
 
@@ -2358,6 +2594,14 @@ ALTER TABLE ONLY "public"."x_configurations"
 
 ALTER TABLE ONLY "public"."x_line_items"
     ADD CONSTRAINT "x_line_items_pkey" PRIMARY KEY ("id");
+
+
+
+CREATE UNIQUE INDEX "WhiteLabelSettings_customDomain_key" ON "public"."WhiteLabelSettings" USING "btree" ("customDomain");
+
+
+
+CREATE UNIQUE INDEX "WhiteLabelSettings_subdomain_key" ON "public"."WhiteLabelSettings" USING "btree" ("subdomain");
 
 
 
@@ -2426,6 +2670,14 @@ CREATE INDEX "campaign_steps_org_id_campaign_id_step_order_idx" ON "public"."cam
 
 
 CREATE INDEX "campaign_steps_org_id_is_completed_idx" ON "public"."campaign_steps" USING "btree" ("org_id", "is_completed");
+
+
+
+CREATE INDEX "campaign_transactions_campaign_id_occurred_at_idx" ON "public"."campaign_transactions" USING "btree" ("campaign_id", "occurred_at");
+
+
+
+CREATE INDEX "campaign_transactions_insertion_order_id_occurred_at_idx" ON "public"."campaign_transactions" USING "btree" ("insertion_order_id", "occurred_at");
 
 
 
@@ -2509,6 +2761,10 @@ CREATE UNIQUE INDEX "onboarding_steps_org_id_step_type_key" ON "public"."onboard
 
 
 
+CREATE UNIQUE INDEX "organization_branding_org_id_key" ON "public"."organization_branding" USING "btree" ("org_id");
+
+
+
 CREATE UNIQUE INDEX "organization_invites_invite_code_key" ON "public"."organization_invites" USING "btree" ("invite_code");
 
 
@@ -2518,6 +2774,42 @@ CREATE UNIQUE INDEX "organization_members_org_id_user_id_key" ON "public"."organ
 
 
 CREATE UNIQUE INDEX "organizations_slug_key" ON "public"."organizations" USING "btree" ("slug");
+
+
+
+CREATE INDEX "payment_allocations_campaign_id_status_idx" ON "public"."payment_allocations" USING "btree" ("campaign_id", "status");
+
+
+
+CREATE INDEX "payment_allocations_org_id_campaign_id_status_idx" ON "public"."payment_allocations" USING "btree" ("org_id", "campaign_id", "status");
+
+
+
+CREATE INDEX "payment_allocations_payment_log_id_idx" ON "public"."payment_allocations" USING "btree" ("payment_log_id");
+
+
+
+CREATE INDEX "payment_logs_campaign_id_idx" ON "public"."payment_logs" USING "btree" ("campaign_id");
+
+
+
+CREATE INDEX "payment_logs_insertion_order_id_idx" ON "public"."payment_logs" USING "btree" ("insertion_order_id");
+
+
+
+CREATE INDEX "payment_logs_org_id_status_idx" ON "public"."payment_logs" USING "btree" ("org_id", "status");
+
+
+
+CREATE UNIQUE INDEX "payment_logs_stripe_charge_id_key" ON "public"."payment_logs" USING "btree" ("stripe_charge_id");
+
+
+
+CREATE UNIQUE INDEX "payment_logs_stripe_invoice_id_key" ON "public"."payment_logs" USING "btree" ("stripe_invoice_id");
+
+
+
+CREATE UNIQUE INDEX "payment_logs_stripe_payment_intent_id_key" ON "public"."payment_logs" USING "btree" ("stripe_payment_intent_id");
 
 
 
@@ -2589,6 +2881,26 @@ CREATE INDEX "real_time_metrics_timestamp_idx" ON "public"."real_time_metrics" U
 
 
 
+CREATE INDEX "refunds_campaign_id_idx" ON "public"."refunds" USING "btree" ("campaign_id");
+
+
+
+CREATE INDEX "refunds_payment_allocation_id_idx" ON "public"."refunds" USING "btree" ("payment_allocation_id");
+
+
+
+CREATE INDEX "refunds_payment_log_id_idx" ON "public"."refunds" USING "btree" ("payment_log_id");
+
+
+
+CREATE INDEX "refunds_status_idx" ON "public"."refunds" USING "btree" ("status");
+
+
+
+CREATE UNIQUE INDEX "refunds_stripe_refund_id_key" ON "public"."refunds" USING "btree" ("stripe_refund_id");
+
+
+
 CREATE UNIQUE INDEX "roles_name_key" ON "public"."roles" USING "btree" ("name");
 
 
@@ -2618,6 +2930,18 @@ CREATE INDEX "sidebar_sections_section_id_idx" ON "public"."sidebar_sections" US
 
 
 CREATE UNIQUE INDEX "sidebar_sections_section_id_key" ON "public"."sidebar_sections" USING "btree" ("section_id");
+
+
+
+CREATE INDEX "stripe_webhook_events_created_at_idx" ON "public"."stripe_webhook_events" USING "btree" ("created_at");
+
+
+
+CREATE INDEX "stripe_webhook_events_event_type_processed_idx" ON "public"."stripe_webhook_events" USING "btree" ("event_type", "processed");
+
+
+
+CREATE UNIQUE INDEX "stripe_webhook_events_stripe_event_id_key" ON "public"."stripe_webhook_events" USING "btree" ("stripe_event_id");
 
 
 
@@ -2681,14 +3005,6 @@ CREATE UNIQUE INDEX "web3_wallets_user_id_wallet_address_key" ON "public"."web3_
 
 
 
-CREATE UNIQUE INDEX "white_label_settings_custom_domain_key" ON "public"."white_label_settings" USING "btree" ("custom_domain");
-
-
-
-CREATE UNIQUE INDEX "white_label_settings_subdomain_key" ON "public"."white_label_settings" USING "btree" ("subdomain");
-
-
-
 CREATE INDEX "x_analytics_date_idx" ON "public"."x_analytics" USING "btree" ("date");
 
 
@@ -2702,6 +3018,16 @@ CREATE UNIQUE INDEX "x_campaigns_campaign_id_key" ON "public"."x_campaigns" USIN
 
 
 CREATE UNIQUE INDEX "x_configurations_org_id_account_id_key" ON "public"."x_configurations" USING "btree" ("org_id", "account_id");
+
+
+
+ALTER TABLE ONLY "public"."WhiteLabelSettings"
+    ADD CONSTRAINT "WhiteLabelSettings_orgId_fkey" FOREIGN KEY ("orgId") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."WhiteLabelSettings"
+    ADD CONSTRAINT "WhiteLabelSettings_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -2867,6 +3193,21 @@ ALTER TABLE ONLY "public"."campaign_steps"
 
 ALTER TABLE ONLY "public"."campaign_steps"
     ADD CONSTRAINT "campaign_steps_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."campaign_transactions"
+    ADD CONSTRAINT "campaign_transactions_campaign_id_fkey" FOREIGN KEY ("campaign_id") REFERENCES "public"."campaigns"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."campaign_transactions"
+    ADD CONSTRAINT "campaign_transactions_insertion_order_id_fkey" FOREIGN KEY ("insertion_order_id") REFERENCES "public"."insertion_orders"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."campaign_transactions"
+    ADD CONSTRAINT "campaign_transactions_platform_campaign_id_fkey" FOREIGN KEY ("platform_campaign_id") REFERENCES "public"."platform_campaigns"("id") ON UPDATE CASCADE ON DELETE SET NULL;
 
 
 
@@ -3070,6 +3411,11 @@ ALTER TABLE ONLY "public"."onboarding_steps"
 
 
 
+ALTER TABLE ONLY "public"."organization_branding"
+    ADD CONSTRAINT "organization_branding_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."organization_details"
     ADD CONSTRAINT "organization_details_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -3127,6 +3473,41 @@ ALTER TABLE ONLY "public"."organizations"
 
 ALTER TABLE ONLY "public"."organizations"
     ADD CONSTRAINT "organizations_parent_org_id_fkey" FOREIGN KEY ("parent_org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."payment_allocations"
+    ADD CONSTRAINT "payment_allocations_campaign_id_fkey" FOREIGN KEY ("campaign_id") REFERENCES "public"."campaigns"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."payment_allocations"
+    ADD CONSTRAINT "payment_allocations_insertion_order_id_fkey" FOREIGN KEY ("insertion_order_id") REFERENCES "public"."insertion_orders"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."payment_allocations"
+    ADD CONSTRAINT "payment_allocations_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."payment_allocations"
+    ADD CONSTRAINT "payment_allocations_payment_log_id_fkey" FOREIGN KEY ("payment_log_id") REFERENCES "public"."payment_logs"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."payment_logs"
+    ADD CONSTRAINT "payment_logs_campaign_id_fkey" FOREIGN KEY ("campaign_id") REFERENCES "public"."campaigns"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."payment_logs"
+    ADD CONSTRAINT "payment_logs_insertion_order_id_fkey" FOREIGN KEY ("insertion_order_id") REFERENCES "public"."insertion_orders"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."payment_logs"
+    ADD CONSTRAINT "payment_logs_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -3202,6 +3583,21 @@ ALTER TABLE ONLY "public"."real_time_metrics"
 
 ALTER TABLE ONLY "public"."real_time_metrics"
     ADD CONSTRAINT "real_time_metrics_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."refunds"
+    ADD CONSTRAINT "refunds_campaign_id_fkey" FOREIGN KEY ("campaign_id") REFERENCES "public"."campaigns"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."refunds"
+    ADD CONSTRAINT "refunds_payment_allocation_id_fkey" FOREIGN KEY ("payment_allocation_id") REFERENCES "public"."payment_allocations"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."refunds"
+    ADD CONSTRAINT "refunds_payment_log_id_fkey" FOREIGN KEY ("payment_log_id") REFERENCES "public"."payment_logs"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -3287,11 +3683,6 @@ ALTER TABLE ONLY "public"."wallets"
 
 ALTER TABLE ONLY "public"."web3_wallets"
     ADD CONSTRAINT "web3_wallets_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "public"."white_label_settings"
-    ADD CONSTRAINT "white_label_settings_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -3787,10 +4178,6 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."wallets" TO "service_role";
 
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."web3_wallets" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."white_label_settings" TO "service_role";
 
 
 
