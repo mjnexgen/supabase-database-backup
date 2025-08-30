@@ -525,6 +525,15 @@ CREATE TYPE "public"."payment_type" AS ENUM (
 ALTER TYPE "public"."payment_type" OWNER TO "postgres";
 
 
+CREATE TYPE "public"."permission_action" AS ENUM (
+    'granted',
+    'revoked'
+);
+
+
+ALTER TYPE "public"."permission_action" OWNER TO "postgres";
+
+
 CREATE TYPE "public"."platform" AS ENUM (
     'iqm',
     'facebook',
@@ -1290,9 +1299,7 @@ CREATE TABLE IF NOT EXISTS "public"."insertion_orders" (
     "iqm_distribution_method_id" integer,
     "platform_references" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
     "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "current_balance" numeric(15,2) DEFAULT 0 NOT NULL,
-    "io_funding_status" "public"."io_funding_status" DEFAULT 'awaiting_payment'::"public"."io_funding_status" NOT NULL
+    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1368,7 +1375,8 @@ CREATE TABLE IF NOT EXISTS "public"."iqm_campaigns" (
     "total_clicks" integer,
     "total_conversions" integer,
     "total_impressions" integer,
-    "platform_audience_id" "text"
+    "platform_audience_id" "text",
+    "deviceSettings" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL
 );
 
 
@@ -1493,6 +1501,21 @@ CREATE TABLE IF NOT EXISTS "public"."meta_configurations" (
 ALTER TABLE "public"."meta_configurations" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."module_permissions" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "module_id" "uuid" NOT NULL,
+    "name" "text" NOT NULL,
+    "displayName" "text" NOT NULL,
+    "description" "text",
+    "isActive" boolean DEFAULT true NOT NULL,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."module_permissions" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."onboarding_steps" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "org_id" "uuid" NOT NULL,
@@ -1586,6 +1609,22 @@ CREATE TABLE IF NOT EXISTS "public"."organization_members" (
 
 
 ALTER TABLE "public"."organization_members" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."organization_role_permissions" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "org_id" "uuid" NOT NULL,
+    "role_id" "uuid" NOT NULL,
+    "module_id" "uuid" NOT NULL,
+    "permission_id" "uuid" NOT NULL,
+    "isGranted" boolean DEFAULT false NOT NULL,
+    "granted_by" "uuid" NOT NULL,
+    "granted_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."organization_role_permissions" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."organizations" (
@@ -1703,6 +1742,25 @@ CREATE TABLE IF NOT EXISTS "public"."performance_metrics" (
 
 
 ALTER TABLE "public"."performance_metrics" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."permission_audit_logs" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "org_id" "uuid" NOT NULL,
+    "target_user_id" "uuid" NOT NULL,
+    "changed_by" "uuid" NOT NULL,
+    "role_id" "uuid" NOT NULL,
+    "module_id" "uuid" NOT NULL,
+    "permission_id" "uuid" NOT NULL,
+    "action" "public"."permission_action" NOT NULL,
+    "previous_value" boolean,
+    "new_value" boolean NOT NULL,
+    "reason" "text",
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."permission_audit_logs" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."phone_numbers" (
@@ -1941,6 +1999,22 @@ CREATE TABLE IF NOT EXISTS "public"."stripe_webhook_events" (
 ALTER TABLE "public"."stripe_webhook_events" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."system_modules" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "name" "text" NOT NULL,
+    "displayName" "text" NOT NULL,
+    "description" "text",
+    "category" "text",
+    "isActive" boolean DEFAULT true NOT NULL,
+    "sortOrder" integer DEFAULT 0 NOT NULL,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."system_modules" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."targeting_criteria" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "platform_specific_campaign_id" "uuid",
@@ -2046,10 +2120,7 @@ CREATE TABLE IF NOT EXISTS "public"."user_preferences" (
     "notification_settings" "jsonb" DEFAULT '{"sms": false, "push": true, "email": true}'::"jsonb",
     "dashboard_layout" "jsonb",
     "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "currency" "text" DEFAULT 'USD'::"text",
-    "iqm_timezone_id" integer,
-    "timezone_name" "text" DEFAULT 'UTC'::"text"
+    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -2412,6 +2483,11 @@ ALTER TABLE ONLY "public"."meta_configurations"
 
 
 
+ALTER TABLE ONLY "public"."module_permissions"
+    ADD CONSTRAINT "module_permissions_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."onboarding_steps"
     ADD CONSTRAINT "onboarding_steps_pkey" PRIMARY KEY ("id");
 
@@ -2442,6 +2518,11 @@ ALTER TABLE ONLY "public"."organization_members"
 
 
 
+ALTER TABLE ONLY "public"."organization_role_permissions"
+    ADD CONSTRAINT "organization_role_permissions_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."organizations"
     ADD CONSTRAINT "organizations_pkey" PRIMARY KEY ("id");
 
@@ -2464,6 +2545,11 @@ ALTER TABLE ONLY "public"."payments"
 
 ALTER TABLE ONLY "public"."performance_metrics"
     ADD CONSTRAINT "performance_metrics_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."permission_audit_logs"
+    ADD CONSTRAINT "permission_audit_logs_pkey" PRIMARY KEY ("id");
 
 
 
@@ -2529,6 +2615,11 @@ ALTER TABLE ONLY "public"."sidebar_sections"
 
 ALTER TABLE ONLY "public"."stripe_webhook_events"
     ADD CONSTRAINT "stripe_webhook_events_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."system_modules"
+    ADD CONSTRAINT "system_modules_pkey" PRIMARY KEY ("id");
 
 
 
@@ -2757,6 +2848,10 @@ CREATE UNIQUE INDEX "meta_configurations_org_id_ad_account_id_key" ON "public"."
 
 
 
+CREATE UNIQUE INDEX "module_permissions_module_id_name_key" ON "public"."module_permissions" USING "btree" ("module_id", "name");
+
+
+
 CREATE UNIQUE INDEX "onboarding_steps_org_id_step_type_key" ON "public"."onboarding_steps" USING "btree" ("org_id", "step_type");
 
 
@@ -2770,6 +2865,14 @@ CREATE UNIQUE INDEX "organization_invites_invite_code_key" ON "public"."organiza
 
 
 CREATE UNIQUE INDEX "organization_members_org_id_user_id_key" ON "public"."organization_members" USING "btree" ("org_id", "user_id");
+
+
+
+CREATE INDEX "organization_role_permissions_org_id_role_id_idx" ON "public"."organization_role_permissions" USING "btree" ("org_id", "role_id");
+
+
+
+CREATE UNIQUE INDEX "organization_role_permissions_org_id_role_id_module_id_perm_key" ON "public"."organization_role_permissions" USING "btree" ("org_id", "role_id", "module_id", "permission_id");
 
 
 
@@ -2826,6 +2929,14 @@ CREATE INDEX "performance_metrics_response_time_ms_idx" ON "public"."performance
 
 
 CREATE INDEX "performance_metrics_service_operation_hour_bucket_idx" ON "public"."performance_metrics" USING "btree" ("service", "operation", "hour_bucket");
+
+
+
+CREATE INDEX "permission_audit_logs_created_at_idx" ON "public"."permission_audit_logs" USING "btree" ("created_at");
+
+
+
+CREATE INDEX "permission_audit_logs_org_id_target_user_id_idx" ON "public"."permission_audit_logs" USING "btree" ("org_id", "target_user_id");
 
 
 
@@ -2942,6 +3053,10 @@ CREATE INDEX "stripe_webhook_events_event_type_processed_idx" ON "public"."strip
 
 
 CREATE UNIQUE INDEX "stripe_webhook_events_stripe_event_id_key" ON "public"."stripe_webhook_events" USING "btree" ("stripe_event_id");
+
+
+
+CREATE UNIQUE INDEX "system_modules_name_key" ON "public"."system_modules" USING "btree" ("name");
 
 
 
@@ -3401,6 +3516,11 @@ ALTER TABLE ONLY "public"."meta_configurations"
 
 
 
+ALTER TABLE ONLY "public"."module_permissions"
+    ADD CONSTRAINT "module_permissions_module_id_fkey" FOREIGN KEY ("module_id") REFERENCES "public"."system_modules"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."onboarding_steps"
     ADD CONSTRAINT "onboarding_steps_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -3466,6 +3586,31 @@ ALTER TABLE ONLY "public"."organization_members"
 
 
 
+ALTER TABLE ONLY "public"."organization_role_permissions"
+    ADD CONSTRAINT "organization_role_permissions_granted_by_fkey" FOREIGN KEY ("granted_by") REFERENCES "public"."users"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."organization_role_permissions"
+    ADD CONSTRAINT "organization_role_permissions_module_id_fkey" FOREIGN KEY ("module_id") REFERENCES "public"."system_modules"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."organization_role_permissions"
+    ADD CONSTRAINT "organization_role_permissions_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."organization_role_permissions"
+    ADD CONSTRAINT "organization_role_permissions_permission_id_fkey" FOREIGN KEY ("permission_id") REFERENCES "public"."module_permissions"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."organization_role_permissions"
+    ADD CONSTRAINT "organization_role_permissions_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."organizations"
     ADD CONSTRAINT "organizations_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "public"."users"("id") ON UPDATE CASCADE ON DELETE SET NULL;
 
@@ -3518,6 +3663,21 @@ ALTER TABLE ONLY "public"."payments"
 
 ALTER TABLE ONLY "public"."performance_metrics"
     ADD CONSTRAINT "performance_metrics_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."permission_audit_logs"
+    ADD CONSTRAINT "permission_audit_logs_changed_by_fkey" FOREIGN KEY ("changed_by") REFERENCES "public"."users"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."permission_audit_logs"
+    ADD CONSTRAINT "permission_audit_logs_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."permission_audit_logs"
+    ADD CONSTRAINT "permission_audit_logs_target_user_id_fkey" FOREIGN KEY ("target_user_id") REFERENCES "public"."users"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 
