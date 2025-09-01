@@ -1054,7 +1054,8 @@ CREATE TABLE IF NOT EXISTS "public"."campaigns" (
     "submitted_at" timestamp(6) with time zone,
     "submitted_by" "uuid",
     "campaign_funding_status" "public"."io_funding_status" DEFAULT 'awaiting_payment'::"public"."io_funding_status" NOT NULL,
-    "current_balance" numeric(15,2) DEFAULT 0 NOT NULL
+    "current_balance" numeric(15,2) DEFAULT 0 NOT NULL,
+    "currency" "text" DEFAULT 'USD'::"text"
 );
 
 
@@ -1640,7 +1641,8 @@ CREATE TABLE IF NOT EXISTS "public"."organizations" (
     "tax_information" "jsonb",
     "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "vendor_org_id" "text"
+    "vendor_org_id" "text",
+    "default_currency" "text" DEFAULT 'USD'::"text"
 );
 
 
@@ -2120,7 +2122,9 @@ CREATE TABLE IF NOT EXISTS "public"."user_preferences" (
     "notification_settings" "jsonb" DEFAULT '{"sms": false, "push": true, "email": true}'::"jsonb",
     "dashboard_layout" "jsonb",
     "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "currency" "text" DEFAULT 'USD'::"text",
+    "timezone" "text" DEFAULT 'UTC'::"text"
 );
 
 
