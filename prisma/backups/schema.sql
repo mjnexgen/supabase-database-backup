@@ -687,6 +687,8 @@ SET default_table_access_method = "heap";
 
 
 CREATE TABLE IF NOT EXISTS "public"."WhiteLabelSettings" (
+    "orgId" "uuid" NOT NULL,
+    "userId" "uuid" NOT NULL,
     "customDomain" "text",
     "subdomain" "text",
     "faviconUrl" "text",
@@ -702,31 +704,14 @@ CREATE TABLE IF NOT EXISTS "public"."WhiteLabelSettings" (
     "contactEmail" "text",
     "contactPhone" "text",
     "address" "jsonb",
-    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updatedAt" timestamp(3) without time zone NOT NULL,
-    "orgId" "uuid" NOT NULL,
-    "userId" "uuid" NOT NULL,
     "companyName" "text" NOT NULL,
-    "websiteUrl" "text" NOT NULL
+    "websiteUrl" "text" NOT NULL,
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
 );
 
 
 ALTER TABLE "public"."WhiteLabelSettings" OWNER TO "postgres";
-
-
-CREATE TABLE IF NOT EXISTS "public"."_prisma_migrations" (
-    "id" character varying(36) NOT NULL,
-    "checksum" character varying(64) NOT NULL,
-    "finished_at" timestamp with time zone,
-    "migration_name" character varying(255) NOT NULL,
-    "logs" "text",
-    "rolled_back_at" timestamp with time zone,
-    "started_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "applied_steps_count" integer DEFAULT 0 NOT NULL
-);
-
-
-ALTER TABLE "public"."_prisma_migrations" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."ad_sets" (
@@ -744,8 +729,8 @@ CREATE TABLE IF NOT EXISTS "public"."ad_sets" (
     "status" "public"."platform_campaign_status" DEFAULT 'pending'::"public"."platform_campaign_status" NOT NULL,
     "platform_specific_fields" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
     "server_logs" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -761,8 +746,8 @@ CREATE TABLE IF NOT EXISTS "public"."ads" (
     "status" "public"."platform_campaign_status" DEFAULT 'pending'::"public"."platform_campaign_status" NOT NULL,
     "tracking_specs" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
     "server_logs" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -776,12 +761,12 @@ CREATE TABLE IF NOT EXISTS "public"."agency_applications" (
     "company_name" "text" NOT NULL,
     "contact_info" "text",
     "status" "public"."application_status" DEFAULT 'pending'::"public"."application_status" NOT NULL,
-    "submitted_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "reviewed_at" timestamp with time zone,
+    "submitted_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "reviewed_at" timestamp(6) with time zone,
     "reviewed_by" "uuid",
     "notes" "text",
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "address" "jsonb",
     "contact_email" "text",
     "contact_phone" "text",
@@ -805,10 +790,10 @@ CREATE TABLE IF NOT EXISTS "public"."agency_customers" (
     "status" "public"."agency_customer_status" DEFAULT 'active'::"public"."agency_customer_status" NOT NULL,
     "commission_rate" numeric(5,2) NOT NULL,
     "commission_structure" "public"."commission_structure" DEFAULT 'percentage'::"public"."commission_structure" NOT NULL,
-    "contract_start_date" timestamp with time zone,
-    "contract_end_date" timestamp with time zone,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "contract_start_date" timestamp(6) with time zone,
+    "contract_end_date" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -820,10 +805,10 @@ CREATE TABLE IF NOT EXISTS "public"."agency_fees" (
     "org_id" "uuid",
     "fee_percentage" numeric(5,2) NOT NULL,
     "min_fee_amount" numeric(10,2),
-    "effective_from" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "effective_to" timestamp with time zone,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "effective_from" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "effective_to" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -835,8 +820,8 @@ CREATE TABLE IF NOT EXISTS "public"."agency_platform_access" (
     "customer_org_id" "uuid" NOT NULL,
     "platform" "public"."platform" NOT NULL,
     "access_level" "public"."access_level" DEFAULT 'full'::"public"."access_level" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -861,8 +846,8 @@ CREATE TABLE IF NOT EXISTS "public"."analytics_aggregated" (
     "cpc" numeric(10,4) DEFAULT 0,
     "ctr" numeric(10,6) DEFAULT 0,
     "conversion_rate" numeric(10,6) DEFAULT 0,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -876,8 +861,8 @@ CREATE TABLE IF NOT EXISTS "public"."analytics_data" (
     "platform" "public"."platform" NOT NULL,
     "date" "date" NOT NULL,
     "metrics" "jsonb" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "insertion_order_id" "uuid"
 );
 
@@ -891,8 +876,8 @@ CREATE TABLE IF NOT EXISTS "public"."assets" (
     "type" "public"."asset_type" NOT NULL,
     "url" "text" NOT NULL,
     "metadata" "jsonb",
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -906,15 +891,15 @@ CREATE TABLE IF NOT EXISTS "public"."audiences" (
     "name" "text" NOT NULL,
     "description" "text",
     "type" "public"."audience_type" NOT NULL,
+    "start_date" timestamp(3) without time zone,
+    "end_date" timestamp(3) without time zone,
+    "period" "text",
     "source" "public"."audience_source" NOT NULL,
     "status" "public"."audience_status" DEFAULT 'draft'::"public"."audience_status" NOT NULL,
     "targeting_data" "jsonb",
     "size" integer,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "end_date" timestamp(3) without time zone,
-    "period" "text",
-    "start_date" timestamp(3) without time zone
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -932,10 +917,10 @@ CREATE TABLE IF NOT EXISTS "public"."campaign_alerts" (
     "is_read" boolean DEFAULT false NOT NULL,
     "is_resolved" boolean DEFAULT false NOT NULL,
     "resolved_by" "uuid",
-    "resolved_at" timestamp with time zone,
+    "resolved_at" timestamp(6) with time zone,
     "metadata" "jsonb",
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1029,15 +1014,17 @@ CREATE TABLE IF NOT EXISTS "public"."campaigns" (
     "name" "text" NOT NULL,
     "description" "text",
     "objective" "public"."campaign_objective",
-    "start_date" timestamp with time zone,
-    "end_date" timestamp with time zone,
+    "start_date" timestamp(6) with time zone,
+    "end_date" timestamp(6) with time zone,
     "timezone_id" "text",
+    "currency" "text" DEFAULT 'USD'::"text",
+    "actualBudget" numeric(15,2),
     "budget" numeric(15,2),
     "daily_budget" numeric(15,2),
     "status" "public"."campaign_status" DEFAULT 'draft'::"public"."campaign_status" NOT NULL,
     "enabled_platforms" "jsonb" DEFAULT '[]'::"jsonb",
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "insertion_order_id" "uuid",
     "category_id" "uuid" NOT NULL,
     "tags" "text"[] DEFAULT ARRAY[]::"text"[],
@@ -1054,8 +1041,7 @@ CREATE TABLE IF NOT EXISTS "public"."campaigns" (
     "submitted_at" timestamp(6) with time zone,
     "submitted_by" "uuid",
     "campaign_funding_status" "public"."io_funding_status" DEFAULT 'awaiting_payment'::"public"."io_funding_status" NOT NULL,
-    "current_balance" numeric(15,2) DEFAULT 0 NOT NULL,
-    "currency" "text" DEFAULT 'USD'::"text"
+    "current_balance" numeric(15,2) DEFAULT 0 NOT NULL
 );
 
 
@@ -1066,7 +1052,7 @@ CREATE TABLE IF NOT EXISTS "public"."creative_assets" (
     "creative_id" "uuid" NOT NULL,
     "enhanced_asset_id" "uuid" NOT NULL,
     "position" integer DEFAULT 0 NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1082,8 +1068,8 @@ CREATE TABLE IF NOT EXISTS "public"."creatives" (
     "type" "public"."creative_type" NOT NULL,
     "status" "public"."creative_status" DEFAULT 'pending'::"public"."creative_status" NOT NULL,
     "creative_data" "jsonb" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "is_variant" boolean DEFAULT false NOT NULL,
     "parent_creative_id" "uuid",
     "platform_compatibility" "jsonb",
@@ -1100,8 +1086,8 @@ CREATE TABLE IF NOT EXISTS "public"."email_addresses" (
     "email_address" "text" NOT NULL,
     "verification_status" "text" NOT NULL,
     "verification_strategy" "text" NOT NULL,
-    "created_at" timestamp with time zone NOT NULL,
-    "updated_at" timestamp with time zone NOT NULL
+    "created_at" timestamp(6) with time zone NOT NULL,
+    "updated_at" timestamp(6) with time zone NOT NULL
 );
 
 
@@ -1118,9 +1104,9 @@ CREATE TABLE IF NOT EXISTS "public"."email_automation_rules" (
     "trigger_conditions" "jsonb" NOT NULL,
     "delay_minutes" integer DEFAULT 0,
     "is_active" boolean DEFAULT true NOT NULL,
-    "last_triggered_at" timestamp with time zone,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "last_triggered_at" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1142,8 +1128,8 @@ CREATE TABLE IF NOT EXISTS "public"."email_configurations" (
     "business_hours_start" integer DEFAULT 9,
     "business_hours_end" integer DEFAULT 17,
     "timezone" "text" DEFAULT 'UTC'::"text",
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1154,7 +1140,7 @@ CREATE TABLE IF NOT EXISTS "public"."email_events" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "email_notification_id" "uuid" NOT NULL,
     "event_type" "public"."email_event_type" NOT NULL,
-    "timestamp" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "timestamp" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "user_agent" "text",
     "ip_address" "text",
     "location" "jsonb",
@@ -1164,7 +1150,7 @@ CREATE TABLE IF NOT EXISTS "public"."email_events" (
     "link_id" "text",
     "bounce_type" "text",
     "bounce_reason" "text",
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1187,9 +1173,9 @@ CREATE TABLE IF NOT EXISTS "public"."email_notifications" (
     "reply_to_email" "text",
     "status" "public"."email_status" DEFAULT 'queued'::"public"."email_status" NOT NULL,
     "priority" "public"."email_priority" DEFAULT 'normal'::"public"."email_priority" NOT NULL,
-    "scheduled_at" timestamp with time zone,
-    "sent_at" timestamp with time zone,
-    "delivered_at" timestamp with time zone,
+    "scheduled_at" timestamp(6) with time zone,
+    "sent_at" timestamp(6) with time zone,
+    "delivered_at" timestamp(6) with time zone,
     "trigger_type" "public"."notification_trigger_type",
     "trigger_entity_id" "uuid",
     "trigger_entity_type" "text",
@@ -1200,8 +1186,8 @@ CREATE TABLE IF NOT EXISTS "public"."email_notifications" (
     "max_retries" integer DEFAULT 3 NOT NULL,
     "metadata" "jsonb",
     "template_variables" "jsonb",
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1222,8 +1208,8 @@ CREATE TABLE IF NOT EXISTS "public"."email_templates" (
     "is_system" boolean DEFAULT false NOT NULL,
     "is_active" boolean DEFAULT true NOT NULL,
     "version" integer DEFAULT 1 NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1244,8 +1230,8 @@ CREATE TABLE IF NOT EXISTS "public"."enhanced_assets" (
     "height" integer,
     "duration_seconds" numeric(10,2),
     "metadata" "jsonb",
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1257,8 +1243,8 @@ CREATE TABLE IF NOT EXISTS "public"."external_accounts" (
     "user_id" "uuid" NOT NULL,
     "provider_type" "text" NOT NULL,
     "provider_user_id" "text" NOT NULL,
-    "created_at" timestamp with time zone NOT NULL,
-    "updated_at" timestamp with time zone NOT NULL
+    "created_at" timestamp(6) with time zone NOT NULL,
+    "updated_at" timestamp(6) with time zone NOT NULL
 );
 
 
@@ -1287,8 +1273,8 @@ CREATE TABLE IF NOT EXISTS "public"."insertion_orders" (
     "created_by" "uuid" NOT NULL,
     "name" "text" NOT NULL,
     "description" "text",
-    "start_date" timestamp with time zone NOT NULL,
-    "end_date" timestamp with time zone,
+    "start_date" timestamp(6) with time zone NOT NULL,
+    "end_date" timestamp(6) with time zone,
     "timezone_id" integer NOT NULL,
     "total_budget" numeric(15,2) NOT NULL,
     "budget_type" "public"."budget_type" NOT NULL,
@@ -1299,8 +1285,8 @@ CREATE TABLE IF NOT EXISTS "public"."insertion_orders" (
     "iqm_performance_goal" "text",
     "iqm_distribution_method_id" integer,
     "platform_references" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1315,10 +1301,10 @@ CREATE TABLE IF NOT EXISTS "public"."invoices" (
     "currency" "text" DEFAULT 'USD'::"text" NOT NULL,
     "status" "public"."invoice_status" DEFAULT 'draft'::"public"."invoice_status" NOT NULL,
     "due_date" "date" NOT NULL,
-    "paid_at" timestamp with time zone,
+    "paid_at" timestamp(6) with time zone,
     "invoice_data" "jsonb" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1337,8 +1323,8 @@ CREATE TABLE IF NOT EXISTS "public"."iqm_analytics" (
     "completion_rate" numeric(10,6) DEFAULT 0,
     "iqm_specific_metrics" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
     "raw_data" "jsonb",
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1350,6 +1336,7 @@ CREATE TABLE IF NOT EXISTS "public"."iqm_campaigns" (
     "campaign_id" "uuid" NOT NULL,
     "iqm_configuration_id" "uuid" NOT NULL,
     "platform_campaign_id" "text",
+    "platform_audience_id" "text",
     "advertiser_domain" "text",
     "creative_type" integer,
     "campaign_type" integer,
@@ -1364,19 +1351,18 @@ CREATE TABLE IF NOT EXISTS "public"."iqm_campaigns" (
     "targeting" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
     "status" "public"."platform_campaign_status" DEFAULT 'pending'::"public"."platform_campaign_status" NOT NULL,
     "server_logs" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "scheduling" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
     "demographics" "jsonb" DEFAULT '{}'::"jsonb",
     "bid_pacing" boolean DEFAULT false,
     "impression_capping" integer,
-    "max_day_clicks" integer,
-    "max_day_conversions" integer,
     "max_day_impressions" integer,
-    "total_clicks" integer,
-    "total_conversions" integer,
     "total_impressions" integer,
-    "platform_audience_id" "text",
+    "max_day_clicks" integer,
+    "total_clicks" integer,
+    "max_day_conversions" integer,
+    "total_conversions" integer,
     "deviceSettings" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL
 );
 
@@ -1391,9 +1377,9 @@ CREATE TABLE IF NOT EXISTS "public"."iqm_configurations" (
     "default_settings" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
     "viewability_settings" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
     "status" "public"."credential_status" DEFAULT 'active'::"public"."credential_status" NOT NULL,
-    "last_sync_at" timestamp with time zone,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "last_sync_at" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1412,8 +1398,8 @@ CREATE TABLE IF NOT EXISTS "public"."line_items" (
     "status" "public"."platform_campaign_status" DEFAULT 'pending'::"public"."platform_campaign_status" NOT NULL,
     "platform_specific_fields" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
     "server_logs" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1434,8 +1420,8 @@ CREATE TABLE IF NOT EXISTS "public"."meta_ad_sets" (
     "status" "public"."platform_campaign_status" DEFAULT 'pending'::"public"."platform_campaign_status" NOT NULL,
     "platform_status" "text",
     "server_logs" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1453,8 +1439,8 @@ CREATE TABLE IF NOT EXISTS "public"."meta_ads" (
     "ad_creative_data" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
     "tracking_specs" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
     "server_logs" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1476,8 +1462,8 @@ CREATE TABLE IF NOT EXISTS "public"."meta_campaigns" (
     "status" "public"."platform_campaign_status" DEFAULT 'pending'::"public"."platform_campaign_status" NOT NULL,
     "platform_status" "text",
     "server_logs" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1493,9 +1479,9 @@ CREATE TABLE IF NOT EXISTS "public"."meta_configurations" (
     "default_settings" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
     "pixel_id" "text",
     "status" "public"."credential_status" DEFAULT 'active'::"public"."credential_status" NOT NULL,
-    "last_sync_at" timestamp with time zone,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "last_sync_at" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1521,10 +1507,10 @@ CREATE TABLE IF NOT EXISTS "public"."onboarding_steps" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "org_id" "uuid" NOT NULL,
     "is_completed" boolean DEFAULT false NOT NULL,
-    "completed_at" timestamp with time zone,
+    "completed_at" timestamp(6) with time zone,
     "step_data" "jsonb",
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "step_type" "public"."onboarding_step_type" NOT NULL,
     "user_id" "uuid"
 );
@@ -1560,8 +1546,8 @@ CREATE TABLE IF NOT EXISTS "public"."organization_details" (
     "contact_phone" "text",
     "address" "jsonb",
     "timezone" "text" DEFAULT 'UTC'::"text",
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1572,7 +1558,7 @@ CREATE TABLE IF NOT EXISTS "public"."organization_hierarchy" (
     "parent_org_id" "uuid" NOT NULL,
     "child_org_id" "uuid" NOT NULL,
     "relationship_type" "public"."relationship_type" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1587,11 +1573,11 @@ CREATE TABLE IF NOT EXISTS "public"."organization_invites" (
     "invited_email" "text" NOT NULL,
     "role_id" "uuid" NOT NULL,
     "used_by" "uuid",
-    "used_at" timestamp with time zone,
-    "expires_at" timestamp with time zone,
+    "used_at" timestamp(6) with time zone,
+    "expires_at" timestamp(6) with time zone,
     "is_active" boolean DEFAULT true NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "temporary_password_hash" "text",
     "invitee_first_name" "text" NOT NULL,
     "invitee_last_name" "text" NOT NULL
@@ -1637,12 +1623,12 @@ CREATE TABLE IF NOT EXISTS "public"."organizations" (
     "display_name" "text",
     "organization_settings" "jsonb" DEFAULT '{}'::"jsonb",
     "default_timezone" "text" DEFAULT 'UTC'::"text",
+    "default_currency" "text" DEFAULT 'USD'::"text",
     "billing_address" "jsonb",
     "tax_information" "jsonb",
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "vendor_org_id" "text",
-    "default_currency" "text" DEFAULT 'USD'::"text"
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "vendor_org_id" "text"
 );
 
 
@@ -1673,14 +1659,16 @@ ALTER TABLE "public"."payment_allocations" OWNER TO "postgres";
 
 CREATE TABLE IF NOT EXISTS "public"."payment_logs" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "insertion_order_id" "uuid",
     "org_id" "uuid" NOT NULL,
+    "campaign_id" "uuid",
+    "insertion_order_id" "uuid",
     "amount_media" numeric(15,2) NOT NULL,
     "fee_cpg" numeric(15,2) NOT NULL,
     "tax_amount" numeric(15,2),
     "amount_total" numeric(15,2) NOT NULL,
     "currency" "text" DEFAULT 'USD'::"text" NOT NULL,
     "status" "public"."payment_status" DEFAULT 'pending'::"public"."payment_status" NOT NULL,
+    "paidPlatforms" "jsonb" NOT NULL,
     "payment_type" "public"."payment_log_type" DEFAULT 'initial'::"public"."payment_log_type" NOT NULL,
     "stripe_payment_intent_id" "text",
     "stripe_charge_id" "text",
@@ -1692,8 +1680,7 @@ CREATE TABLE IF NOT EXISTS "public"."payment_logs" (
     "metadata" "jsonb",
     "processed_at" timestamp(6) with time zone,
     "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "campaign_id" "uuid"
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1707,9 +1694,9 @@ CREATE TABLE IF NOT EXISTS "public"."payments" (
     "amount" numeric(15,2) NOT NULL,
     "currency" "text" DEFAULT 'USD'::"text" NOT NULL,
     "payment_data" "jsonb" NOT NULL,
-    "processed_at" timestamp with time zone,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "processed_at" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1736,10 +1723,10 @@ CREATE TABLE IF NOT EXISTS "public"."performance_metrics" (
     "timeout_count" integer DEFAULT 0 NOT NULL,
     "region" "text",
     "server_instance" "text",
-    "minute_bucket" timestamp with time zone NOT NULL,
-    "hour_bucket" timestamp with time zone NOT NULL,
+    "minute_bucket" timestamp(6) with time zone NOT NULL,
+    "hour_bucket" timestamp(6) with time zone NOT NULL,
     "day_bucket" "date" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1770,8 +1757,8 @@ CREATE TABLE IF NOT EXISTS "public"."phone_numbers" (
     "user_id" "uuid" NOT NULL,
     "phone_number" "text" NOT NULL,
     "verification_status" "text" NOT NULL,
-    "created_at" timestamp with time zone NOT NULL,
-    "updated_at" timestamp with time zone NOT NULL
+    "created_at" timestamp(6) with time zone NOT NULL,
+    "updated_at" timestamp(6) with time zone NOT NULL
 );
 
 
@@ -1786,9 +1773,9 @@ CREATE TABLE IF NOT EXISTS "public"."platform_campaigns" (
     "platform_data" "jsonb",
     "status" "public"."platform_campaign_status" DEFAULT 'pending'::"public"."platform_campaign_status" NOT NULL,
     "error_message" "text",
-    "last_sync_at" timestamp with time zone,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "last_sync_at" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1805,10 +1792,10 @@ CREATE TABLE IF NOT EXISTS "public"."platform_configurations" (
     "api_credentials" "jsonb" NOT NULL,
     "default_settings" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
     "status" "public"."credential_status" DEFAULT 'active'::"public"."credential_status" NOT NULL,
-    "last_sync_at" timestamp with time zone,
-    "expires_at" timestamp with time zone,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "last_sync_at" timestamp(6) with time zone,
+    "expires_at" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1823,9 +1810,9 @@ CREATE TABLE IF NOT EXISTS "public"."platform_creatives" (
     "status" "public"."creative_status" DEFAULT 'pending'::"public"."creative_status" NOT NULL,
     "platform_status" "text",
     "platform_specific_data" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
-    "last_synced_at" timestamp with time zone,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "last_synced_at" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "assigned_by" "uuid",
     "campaign_id" "uuid",
     "is_active" boolean DEFAULT true NOT NULL,
@@ -1846,9 +1833,9 @@ CREATE TABLE IF NOT EXISTS "public"."platform_credentials" (
     "type" "public"."credential_type" NOT NULL,
     "credentials" "jsonb" NOT NULL,
     "status" "public"."credential_status" DEFAULT 'active'::"public"."credential_status" NOT NULL,
-    "expires_at" timestamp with time zone,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "expires_at" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1867,10 +1854,10 @@ CREATE TABLE IF NOT EXISTS "public"."platform_specific_campaigns" (
     "daily_budget" numeric(15,2),
     "platform_specific_data" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
     "error_message" "text",
-    "last_synced_at" timestamp with time zone,
+    "last_synced_at" timestamp(6) with time zone,
     "server_logs" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1885,8 +1872,8 @@ CREATE TABLE IF NOT EXISTS "public"."real_time_metrics" (
     "platform" "public"."platform" NOT NULL,
     "metric_type" "public"."metric_type" NOT NULL,
     "value" numeric(15,4) NOT NULL,
-    "timestamp" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "hour_bucket" timestamp with time zone NOT NULL,
+    "timestamp" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "hour_bucket" timestamp(6) with time zone NOT NULL,
     "day_bucket" "date" NOT NULL
 );
 
@@ -1897,6 +1884,8 @@ ALTER TABLE "public"."real_time_metrics" OWNER TO "postgres";
 CREATE TABLE IF NOT EXISTS "public"."refunds" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "payment_log_id" "uuid" NOT NULL,
+    "payment_allocation_id" "uuid",
+    "campaign_id" "uuid",
     "amount_media" numeric(15,2) NOT NULL,
     "fee_cpg" numeric(15,2) NOT NULL,
     "amount_total" numeric(15,2) NOT NULL,
@@ -1910,9 +1899,7 @@ CREATE TABLE IF NOT EXISTS "public"."refunds" (
     "refunded_by" "uuid",
     "processed_at" timestamp(6) with time zone,
     "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "campaign_id" "uuid",
-    "payment_allocation_id" "uuid"
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -1931,11 +1918,11 @@ CREATE TABLE IF NOT EXISTS "public"."reports" (
     "parameters" "jsonb" NOT NULL,
     "file_path" "text",
     "download_url" "text",
-    "scheduled_at" timestamp with time zone,
-    "generated_at" timestamp with time zone,
-    "expires_at" timestamp with time zone,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "scheduled_at" timestamp(6) with time zone,
+    "generated_at" timestamp(6) with time zone,
+    "expires_at" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -2025,8 +2012,8 @@ CREATE TABLE IF NOT EXISTS "public"."targeting_criteria" (
     "targeting_type" "text" NOT NULL,
     "targeting_value" "text" NOT NULL,
     "operator_type" "text" DEFAULT 'EQ'::"text" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -2043,9 +2030,9 @@ CREATE TABLE IF NOT EXISTS "public"."transactions" (
     "status" "public"."transaction_status" DEFAULT 'pending'::"public"."transaction_status" NOT NULL,
     "reference" "text",
     "metadata" "jsonb",
-    "processed_at" timestamp with time zone,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "processed_at" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -2089,9 +2076,9 @@ CREATE TABLE IF NOT EXISTS "public"."unified_logs" (
     "rate_limit_remaining" integer,
     "quota_used" integer,
     "retry_attempt" integer DEFAULT 0 NOT NULL,
-    "initiated_at" timestamp with time zone,
-    "completed_at" timestamp with time zone,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "initiated_at" timestamp(6) with time zone,
+    "completed_at" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -2108,8 +2095,8 @@ CREATE TABLE IF NOT EXISTS "public"."user_email_preferences" (
     "enable_system_emails" boolean DEFAULT true NOT NULL,
     "alert_frequency" "text" DEFAULT 'immediate'::"text",
     "unsubscribe_token" "text",
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -2121,10 +2108,10 @@ CREATE TABLE IF NOT EXISTS "public"."user_preferences" (
     "theme" "text" DEFAULT 'light'::"text",
     "notification_settings" "jsonb" DEFAULT '{"sms": false, "push": true, "email": true}'::"jsonb",
     "dashboard_layout" "jsonb",
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "timezone" "text" DEFAULT 'UTC'::"text",
     "currency" "text" DEFAULT 'USD'::"text",
-    "timezone" "text" DEFAULT 'UTC'::"text"
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -2143,9 +2130,9 @@ CREATE TABLE IF NOT EXISTS "public"."users" (
     "external_id" "text",
     "password_enabled" boolean DEFAULT true NOT NULL,
     "two_factor_enabled" boolean DEFAULT false NOT NULL,
-    "last_sign_in_at" timestamp with time zone,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "last_sign_in_at" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "primary_email_address_id" "text",
     "primary_phone_number_id" "uuid",
     "primary_web3_wallet_id" "uuid",
@@ -2166,9 +2153,9 @@ CREATE TABLE IF NOT EXISTS "public"."wallet_transactions" (
     "description" "text",
     "reference" "text",
     "metadata" "jsonb",
-    "processed_at" timestamp with time zone,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "processed_at" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -2180,8 +2167,8 @@ CREATE TABLE IF NOT EXISTS "public"."wallets" (
     "org_id" "uuid" NOT NULL,
     "balance" numeric(15,2) DEFAULT 0 NOT NULL,
     "currency" "text" DEFAULT 'USD'::"text" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -2192,8 +2179,8 @@ CREATE TABLE IF NOT EXISTS "public"."web3_wallets" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
     "wallet_address" "text" NOT NULL,
-    "created_at" timestamp with time zone NOT NULL,
-    "updated_at" timestamp with time zone NOT NULL
+    "created_at" timestamp(6) with time zone NOT NULL,
+    "updated_at" timestamp(6) with time zone NOT NULL
 );
 
 
@@ -2218,8 +2205,8 @@ CREATE TABLE IF NOT EXISTS "public"."x_analytics" (
     "qualified_impressions" bigint DEFAULT 0 NOT NULL,
     "video_views" bigint DEFAULT 0 NOT NULL,
     "raw_data" "jsonb",
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -2240,8 +2227,8 @@ CREATE TABLE IF NOT EXISTS "public"."x_campaigns" (
     "status" "public"."platform_campaign_status" DEFAULT 'pending'::"public"."platform_campaign_status" NOT NULL,
     "platform_status" "text",
     "server_logs" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -2256,9 +2243,9 @@ CREATE TABLE IF NOT EXISTS "public"."x_configurations" (
     "default_settings" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
     "funding_instruments" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
     "status" "public"."credential_status" DEFAULT 'active'::"public"."credential_status" NOT NULL,
-    "last_sync_at" timestamp with time zone,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "last_sync_at" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -2279,8 +2266,8 @@ CREATE TABLE IF NOT EXISTS "public"."x_line_items" (
     "status" "public"."platform_campaign_status" DEFAULT 'pending'::"public"."platform_campaign_status" NOT NULL,
     "platform_status" "text",
     "server_logs" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
-    "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 
@@ -2289,11 +2276,6 @@ ALTER TABLE "public"."x_line_items" OWNER TO "postgres";
 
 ALTER TABLE ONLY "public"."WhiteLabelSettings"
     ADD CONSTRAINT "WhiteLabelSettings_pkey" PRIMARY KEY ("orgId");
-
-
-
-ALTER TABLE ONLY "public"."_prisma_migrations"
-    ADD CONSTRAINT "_prisma_migrations_pkey" PRIMARY KEY ("id");
 
 
 
@@ -3889,7 +3871,6 @@ ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
 
 
 REVOKE USAGE ON SCHEMA "public" FROM PUBLIC;
-GRANT USAGE ON SCHEMA "public" TO "service_role";
 
 
 
@@ -4082,282 +4063,6 @@ GRANT USAGE ON SCHEMA "public" TO "service_role";
 
 
 
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."_prisma_migrations" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."ad_sets" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."ads" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."agency_applications" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."agency_customers" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."agency_fees" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."agency_platform_access" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."analytics_aggregated" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."analytics_data" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."assets" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."audiences" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."campaign_alerts" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."campaign_audiences" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."campaign_categories" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."campaign_creatives" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."campaign_steps" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."campaigns" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."creative_assets" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."creatives" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."email_addresses" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."email_automation_rules" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."email_configurations" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."email_events" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."email_notifications" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."email_templates" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."enhanced_assets" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."external_accounts" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."history_log" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."insertion_orders" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."invoices" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."iqm_analytics" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."iqm_campaigns" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."iqm_configurations" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."line_items" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."meta_ad_sets" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."meta_ads" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."meta_campaigns" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."meta_configurations" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."onboarding_steps" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."organization_details" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."organization_hierarchy" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."organization_invites" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."organization_members" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."organizations" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."payments" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."performance_metrics" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."phone_numbers" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."platform_campaigns" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."platform_configurations" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."platform_creatives" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."platform_credentials" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."platform_specific_campaigns" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."real_time_metrics" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."reports" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."roles" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."settings" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."targeting_criteria" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."transactions" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."unified_logs" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."user_email_preferences" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."user_preferences" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."users" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."wallet_transactions" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."wallets" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."web3_wallets" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."x_analytics" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."x_campaigns" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."x_configurations" TO "service_role";
-
-
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "public"."x_line_items" TO "service_role";
 
 
 
