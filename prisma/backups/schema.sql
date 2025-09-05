@@ -59,6 +59,17 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
 
 
 
+CREATE TYPE "public"."PriorityStatus" AS ENUM (
+    'pending',
+    'sent',
+    'completed',
+    'failed'
+);
+
+
+ALTER TYPE "public"."PriorityStatus" OWNER TO "postgres";
+
+
 CREATE TYPE "public"."access_level" AS ENUM (
     'full',
     'read_only',
@@ -969,6 +980,23 @@ CREATE TABLE IF NOT EXISTS "public"."campaign_creatives" (
 ALTER TABLE "public"."campaign_creatives" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."campaign_priorities" (
+    "priority_id" "uuid" NOT NULL,
+    "io_id" "uuid",
+    "priority" integer NOT NULL,
+    "campaign_ids" "text"[],
+    "status" "public"."PriorityStatus" DEFAULT 'pending'::"public"."PriorityStatus" NOT NULL,
+    "platform_request" "jsonb",
+    "platform_response" "jsonb",
+    "created_by" "uuid" NOT NULL,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."campaign_priorities" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."campaign_steps" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "org_id" "uuid" NOT NULL,
@@ -1680,7 +1708,10 @@ CREATE TABLE IF NOT EXISTS "public"."payment_logs" (
     "metadata" "jsonb",
     "processed_at" timestamp(6) with time zone,
     "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "invoice_line_items" "jsonb",
+    "invoice_pdf_url" "text",
+    "r2_invoice_url" "text"
 );
 
 
@@ -2346,6 +2377,11 @@ ALTER TABLE ONLY "public"."campaign_categories"
 
 ALTER TABLE ONLY "public"."campaign_creatives"
     ADD CONSTRAINT "campaign_creatives_pkey" PRIMARY KEY ("org_id", "campaign_id", "creative_id");
+
+
+
+ALTER TABLE ONLY "public"."campaign_priorities"
+    ADD CONSTRAINT "campaign_priorities_pkey" PRIMARY KEY ("priority_id");
 
 
 
@@ -3279,6 +3315,16 @@ ALTER TABLE ONLY "public"."campaign_creatives"
 
 ALTER TABLE ONLY "public"."campaign_creatives"
     ADD CONSTRAINT "campaign_creatives_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."campaign_priorities"
+    ADD CONSTRAINT "campaign_priorities_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "public"."users"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+
+ALTER TABLE ONLY "public"."campaign_priorities"
+    ADD CONSTRAINT "campaign_priorities_io_id_fkey" FOREIGN KEY ("io_id") REFERENCES "public"."insertion_orders"("id") ON UPDATE CASCADE ON DELETE SET NULL;
 
 
 
