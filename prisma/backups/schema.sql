@@ -1,4 +1,6 @@
 
+\restrict jzAUK7LkOlVfaozQ6x37fSikZUf8HVJ5pGmV0n5eSAqkW6Xxdl2kVz0LjBzAJQ9
+
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1106,6 +1108,20 @@ CREATE TABLE IF NOT EXISTS "public"."creatives" (
 
 
 ALTER TABLE "public"."creatives" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."domain_alias" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "org_id" "uuid" NOT NULL,
+    "host" "text" NOT NULL,
+    "redirect_to_host" "text" NOT NULL,
+    "active_until" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."domain_alias" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."email_addresses" (
@@ -2410,6 +2426,11 @@ ALTER TABLE ONLY "public"."creatives"
 
 
 
+ALTER TABLE ONLY "public"."domain_alias"
+    ADD CONSTRAINT "domain_alias_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."email_addresses"
     ADD CONSTRAINT "email_addresses_pkey" PRIMARY KEY ("id");
 
@@ -2791,6 +2812,18 @@ CREATE INDEX "campaign_transactions_campaign_id_occurred_at_idx" ON "public"."ca
 
 
 CREATE INDEX "campaign_transactions_insertion_order_id_occurred_at_idx" ON "public"."campaign_transactions" USING "btree" ("insertion_order_id", "occurred_at");
+
+
+
+CREATE INDEX "domain_alias_active_until_idx" ON "public"."domain_alias" USING "btree" ("active_until");
+
+
+
+CREATE UNIQUE INDEX "domain_alias_host_key" ON "public"."domain_alias" USING "btree" ("host");
+
+
+
+CREATE INDEX "domain_alias_org_idx" ON "public"."domain_alias" USING "btree" ("org_id");
 
 
 
@@ -3410,6 +3443,11 @@ ALTER TABLE ONLY "public"."creatives"
 
 ALTER TABLE ONLY "public"."creatives"
     ADD CONSTRAINT "creatives_parent_creative_id_fkey" FOREIGN KEY ("parent_creative_id") REFERENCES "public"."creatives"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."domain_alias"
+    ADD CONSTRAINT "domain_alias_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -4141,5 +4179,7 @@ REVOKE USAGE ON SCHEMA "public" FROM PUBLIC;
 
 
 
+
+\unrestrict jzAUK7LkOlVfaozQ6x37fSikZUf8HVJ5pGmV0n5eSAqkW6Xxdl2kVz0LjBzAJQ9
 
 RESET ALL;
