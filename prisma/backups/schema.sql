@@ -1,5 +1,5 @@
 
-\restrict jzAUK7LkOlVfaozQ6x37fSikZUf8HVJ5pGmV0n5eSAqkW6Xxdl2kVz0LjBzAJQ9
+\restrict NBS72RNmYs3g86sBZsvh0EmHkvnuVRlz0e5iVOKGjsM7Wq8b5aWyamw2eBnohQK
 
 
 SET statement_timeout = 0;
@@ -465,6 +465,54 @@ CREATE TYPE "public"."metric_type" AS ENUM (
 ALTER TYPE "public"."metric_type" OWNER TO "postgres";
 
 
+CREATE TYPE "public"."notification_channel" AS ENUM (
+    'in_app',
+    'email',
+    'push',
+    'sms'
+);
+
+
+ALTER TYPE "public"."notification_channel" OWNER TO "postgres";
+
+
+CREATE TYPE "public"."notification_log_action" AS ENUM (
+    'created',
+    'sent',
+    'delivered',
+    'read',
+    'failed',
+    'retry',
+    'cancelled'
+);
+
+
+ALTER TYPE "public"."notification_log_action" OWNER TO "postgres";
+
+
+CREATE TYPE "public"."notification_log_status" AS ENUM (
+    'pending',
+    'processing',
+    'completed',
+    'failed',
+    'cancelled'
+);
+
+
+ALTER TYPE "public"."notification_log_status" OWNER TO "postgres";
+
+
+CREATE TYPE "public"."notification_priority" AS ENUM (
+    'low',
+    'normal',
+    'high',
+    'urgent'
+);
+
+
+ALTER TYPE "public"."notification_priority" OWNER TO "postgres";
+
+
 CREATE TYPE "public"."notification_trigger_type" AS ENUM (
     'campaign_submitted',
     'onboarding_started_not_completed',
@@ -476,6 +524,22 @@ CREATE TYPE "public"."notification_trigger_type" AS ENUM (
 
 
 ALTER TYPE "public"."notification_trigger_type" OWNER TO "postgres";
+
+
+CREATE TYPE "public"."notification_type" AS ENUM (
+    'io_created',
+    'campaign_draft_created',
+    'campaign_activated',
+    'campaign_submitted',
+    'payment_succeeded',
+    'payment_failed',
+    'payment_requires_action',
+    'campaign_budget_alert',
+    'system_announcement'
+);
+
+
+ALTER TYPE "public"."notification_type" OWNER TO "postgres";
 
 
 CREATE TYPE "public"."onboarding_step_type" AS ENUM (
@@ -1547,6 +1611,66 @@ CREATE TABLE IF NOT EXISTS "public"."module_permissions" (
 ALTER TABLE "public"."module_permissions" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."notification_logs" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "notification_id" "uuid" NOT NULL,
+    "org_id" "uuid" NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "action" "public"."notification_log_action" NOT NULL,
+    "status" "public"."notification_log_status" NOT NULL,
+    "channel" "public"."notification_channel" NOT NULL,
+    "details" "jsonb",
+    "error_message" "text",
+    "retry_count" integer DEFAULT 0 NOT NULL,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "processed_at" timestamp(6) with time zone
+);
+
+
+ALTER TABLE "public"."notification_logs" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."notification_preferences" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "io_notifications" boolean DEFAULT true NOT NULL,
+    "campaign_notifications" boolean DEFAULT true NOT NULL,
+    "payment_notifications" boolean DEFAULT true NOT NULL,
+    "email_io_notifications" boolean DEFAULT true NOT NULL,
+    "email_campaign_notifications" boolean DEFAULT true NOT NULL,
+    "email_payment_notifications" boolean DEFAULT true NOT NULL,
+    "push_enabled" boolean DEFAULT false NOT NULL,
+    "sound_enabled" boolean DEFAULT true NOT NULL,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."notification_preferences" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."notifications" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "org_id" "uuid" NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "type" "public"."notification_type" NOT NULL,
+    "title" "text" NOT NULL,
+    "message" "text" NOT NULL,
+    "entity_type" "text",
+    "entity_id" "uuid",
+    "metadata" "jsonb",
+    "action_url" "text",
+    "is_read" boolean DEFAULT false NOT NULL,
+    "read_at" timestamp(6) with time zone,
+    "priority" "public"."notification_priority" DEFAULT 'normal'::"public"."notification_priority" NOT NULL,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "expires_at" timestamp(6) with time zone
+);
+
+
+ALTER TABLE "public"."notifications" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."onboarding_steps" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "org_id" "uuid" NOT NULL,
@@ -2531,6 +2655,21 @@ ALTER TABLE ONLY "public"."module_permissions"
 
 
 
+ALTER TABLE ONLY "public"."notification_logs"
+    ADD CONSTRAINT "notification_logs_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."notification_preferences"
+    ADD CONSTRAINT "notification_preferences_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."notifications"
+    ADD CONSTRAINT "notifications_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."onboarding_steps"
     ADD CONSTRAINT "onboarding_steps_pkey" PRIMARY KEY ("id");
 
@@ -2904,6 +3043,38 @@ CREATE UNIQUE INDEX "meta_configurations_org_id_ad_account_id_key" ON "public"."
 
 
 CREATE UNIQUE INDEX "module_permissions_module_id_name_key" ON "public"."module_permissions" USING "btree" ("module_id", "name");
+
+
+
+CREATE INDEX "notification_logs_notification_id_idx" ON "public"."notification_logs" USING "btree" ("notification_id");
+
+
+
+CREATE INDEX "notification_logs_org_id_created_at_idx" ON "public"."notification_logs" USING "btree" ("org_id", "created_at");
+
+
+
+CREATE INDEX "notification_logs_status_channel_idx" ON "public"."notification_logs" USING "btree" ("status", "channel");
+
+
+
+CREATE INDEX "notification_logs_user_id_created_at_idx" ON "public"."notification_logs" USING "btree" ("user_id", "created_at");
+
+
+
+CREATE UNIQUE INDEX "notification_preferences_user_id_key" ON "public"."notification_preferences" USING "btree" ("user_id");
+
+
+
+CREATE INDEX "notifications_entity_type_entity_id_idx" ON "public"."notifications" USING "btree" ("entity_type", "entity_id");
+
+
+
+CREATE INDEX "notifications_org_id_created_at_idx" ON "public"."notifications" USING "btree" ("org_id", "created_at");
+
+
+
+CREATE INDEX "notifications_user_id_is_read_created_at_idx" ON "public"."notifications" USING "btree" ("user_id", "is_read", "created_at");
 
 
 
@@ -3591,6 +3762,36 @@ ALTER TABLE ONLY "public"."module_permissions"
 
 
 
+ALTER TABLE ONLY "public"."notification_logs"
+    ADD CONSTRAINT "notification_logs_notification_id_fkey" FOREIGN KEY ("notification_id") REFERENCES "public"."notifications"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."notification_logs"
+    ADD CONSTRAINT "notification_logs_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."notification_logs"
+    ADD CONSTRAINT "notification_logs_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."notification_preferences"
+    ADD CONSTRAINT "notification_preferences_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."notifications"
+    ADD CONSTRAINT "notifications_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."notifications"
+    ADD CONSTRAINT "notifications_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
 ALTER TABLE ONLY "public"."onboarding_steps"
     ADD CONSTRAINT "onboarding_steps_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -3954,6 +4155,10 @@ ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
 
 
 
+
+
+
+
 REVOKE USAGE ON SCHEMA "public" FROM PUBLIC;
 
 
@@ -4180,6 +4385,6 @@ REVOKE USAGE ON SCHEMA "public" FROM PUBLIC;
 
 
 
-\unrestrict jzAUK7LkOlVfaozQ6x37fSikZUf8HVJ5pGmV0n5eSAqkW6Xxdl2kVz0LjBzAJQ9
+\unrestrict NBS72RNmYs3g86sBZsvh0EmHkvnuVRlz0e5iVOKGjsM7Wq8b5aWyamw2eBnohQK
 
 RESET ALL;
