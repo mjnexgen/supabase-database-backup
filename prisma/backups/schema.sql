@@ -1,5 +1,5 @@
 
-\restrict NBS72RNmYs3g86sBZsvh0EmHkvnuVRlz0e5iVOKGjsM7Wq8b5aWyamw2eBnohQK
+\restrict b8Iz0VQmaFm3i7ZZcA2w3sNYBgXT0kHK5E65NE0kgliulQN5KHrqWxQogJar4T7
 
 
 SET statement_timeout = 0;
@@ -55,6 +55,13 @@ CREATE EXTENSION IF NOT EXISTS "supabase_vault" WITH SCHEMA "vault";
 
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
+
+
+
+
+
+
+CREATE EXTENSION IF NOT EXISTS "wrappers" WITH SCHEMA "extensions";
 
 
 
@@ -1135,7 +1142,8 @@ CREATE TABLE IF NOT EXISTS "public"."campaigns" (
     "submitted_at" timestamp(6) with time zone,
     "submitted_by" "uuid",
     "campaign_funding_status" "public"."io_funding_status" DEFAULT 'awaiting_payment'::"public"."io_funding_status" NOT NULL,
-    "current_balance" numeric(15,2) DEFAULT 0 NOT NULL
+    "current_balance" numeric(15,2) DEFAULT 0 NOT NULL,
+    "total_commision" numeric(15,2)
 );
 
 
@@ -1471,7 +1479,9 @@ CREATE TABLE IF NOT EXISTS "public"."iqm_campaigns" (
     "total_clicks" integer,
     "max_day_conversions" integer,
     "total_conversions" integer,
-    "deviceSettings" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL
+    "deviceSettings" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "actual_budget" numeric(15,2),
+    "commision_budget" numeric(15,2)
 );
 
 
@@ -4147,6 +4157,50 @@ ALTER TABLE ONLY "public"."x_line_items"
 
 
 
+CREATE POLICY "Allow all for testing" ON "public"."campaigns" TO "authenticated", "anon", "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "Allow all for testing" ON "public"."insertion_orders" TO "authenticated", "anon", "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "Allow all for testing" ON "public"."organizations" TO "authenticated", "anon", "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "Allow all for testing" ON "public"."users" TO "authenticated", "anon", "service_role" USING (true) WITH CHECK (true);
+
+
+
+CREATE POLICY "Service role bypass" ON "public"."campaigns" USING (("auth"."role"() = 'service_role'::"text"));
+
+
+
+CREATE POLICY "Service role bypass" ON "public"."insertion_orders" USING (("auth"."role"() = 'service_role'::"text"));
+
+
+
+CREATE POLICY "Service role bypass" ON "public"."organizations" USING (("auth"."role"() = 'service_role'::"text"));
+
+
+
+CREATE POLICY "Service role bypass" ON "public"."users" USING (("auth"."role"() = 'service_role'::"text"));
+
+
+
+ALTER TABLE "public"."campaigns" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."insertion_orders" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."organizations" ENABLE ROW LEVEL SECURITY;
+
+
+ALTER TABLE "public"."users" ENABLE ROW LEVEL SECURITY;
+
+
 
 
 ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
@@ -4160,6 +4214,7 @@ ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
 
 
 REVOKE USAGE ON SCHEMA "public" FROM PUBLIC;
+GRANT USAGE ON SCHEMA "public" TO "anon";
 
 
 
@@ -4385,6 +4440,466 @@ REVOKE USAGE ON SCHEMA "public" FROM PUBLIC;
 
 
 
-\unrestrict NBS72RNmYs3g86sBZsvh0EmHkvnuVRlz0e5iVOKGjsM7Wq8b5aWyamw2eBnohQK
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+GRANT ALL ON TABLE "public"."WhiteLabelSettings" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."ad_sets" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."ads" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."agency_applications" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."agency_customers" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."agency_fees" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."agency_platform_access" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."analytics_aggregated" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."analytics_data" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."assets" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."audiences" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."campaign_alerts" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."campaign_audiences" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."campaign_categories" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."campaign_creatives" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."campaign_priorities" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."campaign_steps" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."campaign_transactions" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."campaigns" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."creative_assets" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."creatives" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."domain_alias" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."email_addresses" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."email_automation_rules" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."email_configurations" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."email_events" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."email_notifications" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."email_templates" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."enhanced_assets" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."external_accounts" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."history_log" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."insertion_orders" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."invoices" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."iqm_analytics" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."iqm_campaigns" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."iqm_configurations" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."line_items" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."meta_ad_sets" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."meta_ads" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."meta_campaigns" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."meta_configurations" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."module_permissions" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."notification_logs" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."notification_preferences" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."notifications" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."onboarding_steps" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."organization_branding" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."organization_details" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."organization_hierarchy" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."organization_invites" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."organization_members" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."organization_role_permissions" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."organizations" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."payment_allocations" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."payment_logs" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."payments" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."performance_metrics" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."permission_audit_logs" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."phone_numbers" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."platform_campaigns" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."platform_configurations" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."platform_creatives" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."platform_credentials" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."platform_specific_campaigns" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."real_time_metrics" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."refunds" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."reports" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."roles" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."settings" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."sidebar_sections" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."stripe_webhook_events" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."system_modules" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."targeting_criteria" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."transactions" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."unified_logs" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."user_email_preferences" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."user_preferences" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."users" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."wallet_transactions" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."wallets" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."web3_wallets" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."x_analytics" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."x_campaigns" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."x_configurations" TO "anon";
+
+
+
+GRANT ALL ON TABLE "public"."x_line_items" TO "anon";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\unrestrict b8Iz0VQmaFm3i7ZZcA2w3sNYBgXT0kHK5E65NE0kgliulQN5KHrqWxQogJar4T7
 
 RESET ALL;
