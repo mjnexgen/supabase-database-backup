@@ -1,5 +1,5 @@
 
-\restrict b8Iz0VQmaFm3i7ZZcA2w3sNYBgXT0kHK5E65NE0kgliulQN5KHrqWxQogJar4T7
+\restrict cNW0Z8wrbXTZyuRMzb1FKlkroG1PvGnKgKJJTMPmLBuHasAoskTB50IPcoXtf2S
 
 
 SET statement_timeout = 0;
@@ -1690,7 +1690,7 @@ CREATE TABLE IF NOT EXISTS "public"."onboarding_steps" (
     "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "step_type" "public"."onboarding_step_type" NOT NULL,
-    "user_id" "uuid"
+    "user_id" "uuid" NOT NULL
 );
 
 
@@ -3024,6 +3024,22 @@ CREATE UNIQUE INDEX "external_accounts_provider_type_provider_user_id_key" ON "p
 
 
 
+CREATE INDEX "insertion_orders_created_at_idx" ON "public"."insertion_orders" USING "btree" ("created_at" DESC);
+
+
+
+CREATE INDEX "insertion_orders_created_by_created_at_idx" ON "public"."insertion_orders" USING "btree" ("created_by", "created_at" DESC);
+
+
+
+CREATE INDEX "insertion_orders_created_by_idx" ON "public"."insertion_orders" USING "btree" ("created_by");
+
+
+
+CREATE INDEX "insertion_orders_org_id_idx" ON "public"."insertion_orders" USING "btree" ("org_id");
+
+
+
 CREATE UNIQUE INDEX "invoices_invoice_number_key" ON "public"."invoices" USING "btree" ("invoice_number");
 
 
@@ -3088,7 +3104,7 @@ CREATE INDEX "notifications_user_id_is_read_created_at_idx" ON "public"."notific
 
 
 
-CREATE UNIQUE INDEX "onboarding_steps_org_id_step_type_key" ON "public"."onboarding_steps" USING "btree" ("org_id", "step_type");
+CREATE UNIQUE INDEX "onboarding_steps_org_id_user_id_step_type_key" ON "public"."onboarding_steps" USING "btree" ("org_id", "user_id", "step_type");
 
 
 
@@ -4900,6 +4916,6 @@ GRANT ALL ON TABLE "public"."x_line_items" TO "anon";
 
 
 
-\unrestrict b8Iz0VQmaFm3i7ZZcA2w3sNYBgXT0kHK5E65NE0kgliulQN5KHrqWxQogJar4T7
+\unrestrict cNW0Z8wrbXTZyuRMzb1FKlkroG1PvGnKgKJJTMPmLBuHasAoskTB50IPcoXtf2S
 
 RESET ALL;
