@@ -1,5 +1,5 @@
 
-\restrict BSelQHgBphB8iAkm6Ga6iyuOVmvXMjaqae5IFM2GePHuDkoH8ZDVgODN4pAWLsD
+\restrict mQusCClShFP9TOKD0QybQ8SQgKOHhRjvCPdzyCHRoWAp0xdk3iy4TTbdh7M1SSb
 
 
 SET statement_timeout = 0;
@@ -2292,7 +2292,8 @@ CREATE TABLE IF NOT EXISTS "public"."user_preferences" (
     "timezone" "text" DEFAULT 'UTC'::"text",
     "currency" "text" DEFAULT 'USD'::"text",
     "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "onboarding_data" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL
 );
 
 
@@ -4226,6 +4227,10 @@ ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
 
 
 
+ALTER PUBLICATION "supabase_realtime" ADD TABLE ONLY "public"."notifications";
+
+
+
 
 
 
@@ -4916,6 +4921,6 @@ GRANT ALL ON TABLE "public"."x_line_items" TO "anon";
 
 
 
-\unrestrict BSelQHgBphB8iAkm6Ga6iyuOVmvXMjaqae5IFM2GePHuDkoH8ZDVgODN4pAWLsD
+\unrestrict mQusCClShFP9TOKD0QybQ8SQgKOHhRjvCPdzyCHRoWAp0xdk3iy4TTbdh7M1SSb
 
 RESET ALL;
