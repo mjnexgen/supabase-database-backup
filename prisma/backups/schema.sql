@@ -1,5 +1,5 @@
 
-\restrict WhNoA5JNeV5gR7Jkc9P8ZaEHbuf8RlptWesVx1NZWaNOjjKUPKthBK3GOCcasvl
+\restrict NzTWHifLghK3hpZP02LecaJKDup6LYoukVtzsFQAAwN0t9yM5kzMWQJZokzgGSz
 
 
 SET statement_timeout = 0;
@@ -192,6 +192,95 @@ CREATE TYPE "public"."audience_type" AS ENUM (
 
 
 ALTER TYPE "public"."audience_type" OWNER TO "postgres";
+
+
+CREATE TYPE "public"."audit_action_type" AS ENUM (
+    'CREATE',
+    'READ',
+    'UPDATE',
+    'DELETE',
+    'LOGIN',
+    'LOGOUT',
+    'UPLOAD',
+    'DOWNLOAD',
+    'EXPORT',
+    'IMPORT',
+    'APPROVE',
+    'REJECT',
+    'SUBMIT',
+    'CANCEL',
+    'ACTIVATE',
+    'DEACTIVATE',
+    'INVITE',
+    'ACCEPT_INVITE',
+    'REJECT_INVITE',
+    'RESET_PASSWORD',
+    'CHANGE_PASSWORD',
+    'UPDATE_PROFILE',
+    'UPDATE_PREFERENCES',
+    'VIEW_ANALYTICS',
+    'MANAGE_USERS',
+    'MANAGE_ROLES',
+    'MANAGE_PERMISSIONS',
+    'BILLING_ACTION',
+    'PAYMENT_ACTION',
+    'SYSTEM_CONFIG',
+    'API_CALL',
+    'WEBHOOK_RECEIVED',
+    'EXTERNAL_INTEGRATION',
+    'CUSTOM'
+);
+
+
+ALTER TYPE "public"."audit_action_type" OWNER TO "postgres";
+
+
+CREATE TYPE "public"."audit_actor_type" AS ENUM (
+    'USER',
+    'AGENT',
+    'SYSTEM',
+    'ANONYMOUS',
+    'API',
+    'WEBHOOK',
+    'CRON',
+    'EXTERNAL'
+);
+
+
+ALTER TYPE "public"."audit_actor_type" OWNER TO "postgres";
+
+
+CREATE TYPE "public"."audit_resource_type" AS ENUM (
+    'USER',
+    'ORGANIZATION',
+    'CAMPAIGN',
+    'CREATIVE',
+    'AUDIENCE',
+    'INSERTION_ORDER',
+    'BUDGET',
+    'PAYMENT',
+    'ROLE',
+    'PERMISSION',
+    'MODULE',
+    'SETTINGS',
+    'PREFERENCES',
+    'BRANDING',
+    'INVITATION',
+    'SESSION',
+    'ANALYTICS',
+    'REPORT',
+    'EXPORT',
+    'UPLOAD',
+    'WEBHOOK',
+    'API_KEY',
+    'CREDENTIAL',
+    'INTEGRATION',
+    'SYSTEM',
+    'OTHER'
+);
+
+
+ALTER TYPE "public"."audit_resource_type" OWNER TO "postgres";
 
 
 CREATE TYPE "public"."audit_status" AS ENUM (
@@ -770,34 +859,6 @@ SET default_tablespace = '';
 SET default_table_access_method = "heap";
 
 
-CREATE TABLE IF NOT EXISTS "public"."WhiteLabelSettings" (
-    "orgId" "uuid" NOT NULL,
-    "userId" "uuid" NOT NULL,
-    "customDomain" "text",
-    "subdomain" "text",
-    "faviconUrl" "text",
-    "logoUrl" "text",
-    "loginBackgroundUrl" "text",
-    "termsUrl" "text",
-    "privacyUrl" "text",
-    "supportUrl" "text",
-    "primaryColor" "text",
-    "secondaryColor" "text",
-    "description" "text",
-    "supportEmail" "text",
-    "contactEmail" "text",
-    "contactPhone" "text",
-    "address" "jsonb",
-    "companyName" "text" NOT NULL,
-    "websiteUrl" "text" NOT NULL,
-    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updatedAt" timestamp(3) without time zone NOT NULL
-);
-
-
-ALTER TABLE "public"."WhiteLabelSettings" OWNER TO "postgres";
-
-
 CREATE TABLE IF NOT EXISTS "public"."ad_sets" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "platform_specific_campaign_id" "uuid" NOT NULL,
@@ -988,6 +1049,34 @@ CREATE TABLE IF NOT EXISTS "public"."audiences" (
 
 
 ALTER TABLE "public"."audiences" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."audit_logs" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "user_id" "uuid",
+    "organization_id" "uuid",
+    "actor_type" "public"."audit_actor_type" DEFAULT 'USER'::"public"."audit_actor_type" NOT NULL,
+    "action" "public"."audit_action_type" NOT NULL,
+    "resource_type" "public"."audit_resource_type",
+    "resource_id" "text",
+    "endpoint" "text" NOT NULL,
+    "method" "text" NOT NULL,
+    "status_code" integer NOT NULL,
+    "ip_address" "text",
+    "user_agent" "text",
+    "session_id" "text",
+    "request_data" "jsonb",
+    "response_summary" "jsonb",
+    "error_message" "text",
+    "duration_ms" integer,
+    "metadata" "jsonb",
+    "tags" "text"[] DEFAULT ARRAY[]::"text"[],
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."audit_logs" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."campaign_alerts" (
@@ -2369,6 +2458,47 @@ CREATE TABLE IF NOT EXISTS "public"."web3_wallets" (
 ALTER TABLE "public"."web3_wallets" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."white_label_settings" (
+    "orgId" "uuid" NOT NULL,
+    "userId" "uuid" NOT NULL,
+    "customDomain" "text",
+    "subdomain" "text",
+    "faviconUrl" "text",
+    "logoUrl" "text",
+    "loginBackgroundUrl" "text",
+    "termsUrl" "text",
+    "privacyUrl" "text",
+    "supportUrl" "text",
+    "primaryColor" "text",
+    "secondaryColor" "text",
+    "description" "text",
+    "supportEmail" "text",
+    "contactEmail" "text",
+    "contactPhone" "text",
+    "address" "jsonb",
+    "companyName" "text" NOT NULL,
+    "websiteUrl" "text" NOT NULL,
+    "config" "jsonb",
+    "whitelabel_config_id" "uuid",
+    "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updatedAt" timestamp(3) without time zone NOT NULL
+);
+
+
+ALTER TABLE "public"."white_label_settings" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."whitelabel_config" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "config" "jsonb",
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."whitelabel_config" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."x_analytics" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "x_campaign_id" "uuid",
@@ -2456,11 +2586,6 @@ CREATE TABLE IF NOT EXISTS "public"."x_line_items" (
 ALTER TABLE "public"."x_line_items" OWNER TO "postgres";
 
 
-ALTER TABLE ONLY "public"."WhiteLabelSettings"
-    ADD CONSTRAINT "WhiteLabelSettings_pkey" PRIMARY KEY ("orgId");
-
-
-
 ALTER TABLE ONLY "public"."ad_sets"
     ADD CONSTRAINT "ad_sets_pkey" PRIMARY KEY ("id");
 
@@ -2508,6 +2633,11 @@ ALTER TABLE ONLY "public"."assets"
 
 ALTER TABLE ONLY "public"."audiences"
     ADD CONSTRAINT "audiences_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."audit_logs"
+    ADD CONSTRAINT "audit_logs_pkey" PRIMARY KEY ("id");
 
 
 
@@ -2861,6 +2991,16 @@ ALTER TABLE ONLY "public"."web3_wallets"
 
 
 
+ALTER TABLE ONLY "public"."white_label_settings"
+    ADD CONSTRAINT "white_label_settings_pkey" PRIMARY KEY ("orgId");
+
+
+
+ALTER TABLE ONLY "public"."whitelabel_config"
+    ADD CONSTRAINT "whitelabel_config_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."x_analytics"
     ADD CONSTRAINT "x_analytics_pkey" PRIMARY KEY ("id");
 
@@ -2878,14 +3018,6 @@ ALTER TABLE ONLY "public"."x_configurations"
 
 ALTER TABLE ONLY "public"."x_line_items"
     ADD CONSTRAINT "x_line_items_pkey" PRIMARY KEY ("id");
-
-
-
-CREATE UNIQUE INDEX "WhiteLabelSettings_customDomain_key" ON "public"."WhiteLabelSettings" USING "btree" ("customDomain");
-
-
-
-CREATE UNIQUE INDEX "WhiteLabelSettings_subdomain_key" ON "public"."WhiteLabelSettings" USING "btree" ("subdomain");
 
 
 
@@ -2910,6 +3042,46 @@ CREATE INDEX "analytics_aggregated_org_id_date_idx" ON "public"."analytics_aggre
 
 
 CREATE UNIQUE INDEX "analytics_data_org_id_campaign_id_platform_date_key" ON "public"."analytics_data" USING "btree" ("org_id", "campaign_id", "platform", "date");
+
+
+
+CREATE INDEX "audit_logs_action_idx" ON "public"."audit_logs" USING "btree" ("action");
+
+
+
+CREATE INDEX "audit_logs_actor_type_created_at_idx" ON "public"."audit_logs" USING "btree" ("actor_type", "created_at");
+
+
+
+CREATE INDEX "audit_logs_created_at_idx" ON "public"."audit_logs" USING "btree" ("created_at");
+
+
+
+CREATE INDEX "audit_logs_organization_id_action_created_at_idx" ON "public"."audit_logs" USING "btree" ("organization_id", "action", "created_at");
+
+
+
+CREATE INDEX "audit_logs_organization_id_idx" ON "public"."audit_logs" USING "btree" ("organization_id");
+
+
+
+CREATE INDEX "audit_logs_resource_type_resource_id_idx" ON "public"."audit_logs" USING "btree" ("resource_type", "resource_id");
+
+
+
+CREATE INDEX "audit_logs_session_id_idx" ON "public"."audit_logs" USING "btree" ("session_id");
+
+
+
+CREATE INDEX "audit_logs_status_code_created_at_idx" ON "public"."audit_logs" USING "btree" ("status_code", "created_at");
+
+
+
+CREATE INDEX "audit_logs_user_id_created_at_idx" ON "public"."audit_logs" USING "btree" ("user_id", "created_at");
+
+
+
+CREATE INDEX "audit_logs_user_id_idx" ON "public"."audit_logs" USING "btree" ("user_id");
 
 
 
@@ -3373,6 +3545,14 @@ CREATE UNIQUE INDEX "web3_wallets_user_id_wallet_address_key" ON "public"."web3_
 
 
 
+CREATE UNIQUE INDEX "white_label_settings_customDomain_key" ON "public"."white_label_settings" USING "btree" ("customDomain");
+
+
+
+CREATE UNIQUE INDEX "white_label_settings_subdomain_key" ON "public"."white_label_settings" USING "btree" ("subdomain");
+
+
+
 CREATE INDEX "x_analytics_date_idx" ON "public"."x_analytics" USING "btree" ("date");
 
 
@@ -3386,16 +3566,6 @@ CREATE UNIQUE INDEX "x_campaigns_campaign_id_key" ON "public"."x_campaigns" USIN
 
 
 CREATE UNIQUE INDEX "x_configurations_org_id_account_id_key" ON "public"."x_configurations" USING "btree" ("org_id", "account_id");
-
-
-
-ALTER TABLE ONLY "public"."WhiteLabelSettings"
-    ADD CONSTRAINT "WhiteLabelSettings_orgId_fkey" FOREIGN KEY ("orgId") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "public"."WhiteLabelSettings"
-    ADD CONSTRAINT "WhiteLabelSettings_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -3491,6 +3661,16 @@ ALTER TABLE ONLY "public"."audiences"
 
 ALTER TABLE ONLY "public"."audiences"
     ADD CONSTRAINT "audiences_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."audit_logs"
+    ADD CONSTRAINT "audit_logs_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."audit_logs"
+    ADD CONSTRAINT "audit_logs_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON UPDATE CASCADE ON DELETE SET NULL;
 
 
 
@@ -4144,6 +4324,21 @@ ALTER TABLE ONLY "public"."web3_wallets"
 
 
 
+ALTER TABLE ONLY "public"."white_label_settings"
+    ADD CONSTRAINT "white_label_settings_orgId_fkey" FOREIGN KEY ("orgId") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."white_label_settings"
+    ADD CONSTRAINT "white_label_settings_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."white_label_settings"
+    ADD CONSTRAINT "white_label_settings_whitelabel_config_id_fkey" FOREIGN KEY ("whitelabel_config_id") REFERENCES "public"."whitelabel_config"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+
 ALTER TABLE ONLY "public"."x_analytics"
     ADD CONSTRAINT "x_analytics_x_campaign_id_fkey" FOREIGN KEY ("x_campaign_id") REFERENCES "public"."x_campaigns"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -4551,10 +4746,6 @@ GRANT USAGE ON SCHEMA "public" TO "anon";
 
 
 
-GRANT ALL ON TABLE "public"."WhiteLabelSettings" TO "anon";
-
-
-
 GRANT ALL ON TABLE "public"."ad_sets" TO "anon";
 
 
@@ -4921,6 +5112,6 @@ GRANT ALL ON TABLE "public"."x_line_items" TO "anon";
 
 
 
-\unrestrict WhNoA5JNeV5gR7Jkc9P8ZaEHbuf8RlptWesVx1NZWaNOjjKUPKthBK3GOCcasvl
+\unrestrict NzTWHifLghK3hpZP02LecaJKDup6LYoukVtzsFQAAwN0t9yM5kzMWQJZokzgGSz
 
 RESET ALL;
