@@ -1,5 +1,5 @@
 
-\restrict NzTWHifLghK3hpZP02LecaJKDup6LYoukVtzsFQAAwN0t9yM5kzMWQJZokzgGSz
+\restrict IElNiIqZvm7cetrypJarvW0uGYmzp36XSXbHLNEdZJwnMWU2O4lSI69YmXcQd1o
 
 
 SET statement_timeout = 0;
@@ -497,7 +497,8 @@ CREATE TYPE "public"."io_funding_status" AS ENUM (
     'funded',
     'partially_refunded',
     'refunded',
-    'canceled'
+    'canceled',
+    'refund_pending'
 );
 
 
@@ -1059,8 +1060,8 @@ CREATE TABLE IF NOT EXISTS "public"."audit_logs" (
     "action" "public"."audit_action_type" NOT NULL,
     "resource_type" "public"."audit_resource_type",
     "resource_id" "text",
-    "endpoint" "text" NOT NULL,
-    "method" "text" NOT NULL,
+    "endpoint" character varying(255) NOT NULL,
+    "method" character varying(10) NOT NULL,
     "status_code" integer NOT NULL,
     "ip_address" "text",
     "user_agent" "text",
@@ -1072,7 +1073,11 @@ CREATE TABLE IF NOT EXISTS "public"."audit_logs" (
     "metadata" "jsonb",
     "tags" "text"[] DEFAULT ARRAY[]::"text"[],
     "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "status" character varying(20) DEFAULT 'success'::character varying NOT NULL,
+    "request_id" character varying(100),
+    "error_code" character varying(50),
+    CONSTRAINT "audit_logs_status_check" CHECK ((("status")::"text" = ANY ((ARRAY['success'::character varying, 'failure'::character varying, 'pending'::character varying, 'timeout'::character varying])::"text"[])))
 );
 
 
@@ -5112,6 +5117,6 @@ GRANT ALL ON TABLE "public"."x_line_items" TO "anon";
 
 
 
-\unrestrict NzTWHifLghK3hpZP02LecaJKDup6LYoukVtzsFQAAwN0t9yM5kzMWQJZokzgGSz
+\unrestrict IElNiIqZvm7cetrypJarvW0uGYmzp36XSXbHLNEdZJwnMWU2O4lSI69YmXcQd1o
 
 RESET ALL;
