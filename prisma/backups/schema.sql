@@ -1,5 +1,5 @@
 
-\restrict p0lp2W9vJdlYHSkWAxqZxBcnFWJaIoNabVnE3FHPTAdreWKo0FLZSjeL7OEpSzq
+\restrict RPukKclvyhr1UUtnQpw9S2gHoaAjh3SRLF3cDTVj1MHMkffSn6sKwwhjdfY5L4Y
 
 
 SET statement_timeout = 0;
@@ -854,6 +854,57 @@ CREATE TYPE "public"."transaction_type" AS ENUM (
 
 
 ALTER TYPE "public"."transaction_type" OWNER TO "postgres";
+
+
+CREATE OR REPLACE FUNCTION "public"."get_user_rbac_data"("p_clerk_user_id" "text", "p_clerk_org_id" "text") RETURNS TABLE("user_id" "uuid", "org_id" "uuid", "role_id" "uuid", "role_name" character varying, "module_permissions" "jsonb")
+    LANGUAGE "plpgsql"
+    AS $$
+BEGIN
+  RETURN QUERY
+  WITH user_rbac AS (
+    SELECT 
+      u.id as user_id,
+      o.id as org_id,
+      om.role_id,
+      r.name as role_name
+    FROM users u
+    INNER JOIN organization_members om ON om.user_id = u.id
+    INNER JOIN organizations o ON o.id = om.org_id
+    INNER JOIN roles r ON r.id = om.role_id
+    WHERE u.clerk_user_id = p_clerk_user_id
+      AND o.vendor_org_id = p_clerk_org_id
+    LIMIT 1
+  ),
+  module_perms AS (
+    SELECT 
+      sm.name as module_name,
+      COALESCE(orp.is_granted, true) as is_granted
+    FROM system_modules sm
+    CROSS JOIN user_rbac ur
+    LEFT JOIN module_permissions mp ON mp.module_id = sm.id AND mp.name = 'module_access'
+    LEFT JOIN organization_role_permissions orp ON 
+      orp.module_id = sm.id 
+      AND orp.permission_id = mp.id
+      AND orp.org_id = ur.org_id
+      AND orp.role_id = ur.role_id
+  )
+  SELECT 
+    ur.user_id,
+    ur.org_id,
+    ur.role_id,
+    ur.role_name,
+    COALESCE(
+      json_object_agg(mp.module_name, mp.is_granted) FILTER (WHERE mp.module_name IS NOT NULL),
+      '{}'::json
+    )::jsonb as module_permissions
+  FROM user_rbac ur
+  LEFT JOIN module_perms mp ON true
+  GROUP BY ur.user_id, ur.org_id, ur.role_id, ur.role_name;
+END;
+$$;
+
+
+ALTER FUNCTION "public"."get_user_rbac_data"("p_clerk_user_id" "text", "p_clerk_org_id" "text") OWNER TO "postgres";
 
 SET default_tablespace = '';
 
@@ -4436,6 +4487,7 @@ ALTER PUBLICATION "supabase_realtime" ADD TABLE ONLY "public"."notifications";
 
 REVOKE USAGE ON SCHEMA "public" FROM PUBLIC;
 GRANT USAGE ON SCHEMA "public" TO "anon";
+GRANT USAGE ON SCHEMA "public" TO "service_role";
 
 
 
@@ -4724,6 +4776,10 @@ GRANT USAGE ON SCHEMA "public" TO "anon";
 
 
 
+
+
+
+GRANT ALL ON FUNCTION "public"."get_user_rbac_data"("p_clerk_user_id" "text", "p_clerk_org_id" "text") TO "service_role";
 
 
 
@@ -4836,6 +4892,7 @@ GRANT ALL ON TABLE "public"."domain_alias" TO "anon";
 
 
 GRANT ALL ON TABLE "public"."email_addresses" TO "anon";
+GRANT ALL ON TABLE "public"."email_addresses" TO "service_role";
 
 
 
@@ -4864,6 +4921,7 @@ GRANT ALL ON TABLE "public"."enhanced_assets" TO "anon";
 
 
 GRANT ALL ON TABLE "public"."external_accounts" TO "anon";
+GRANT ALL ON TABLE "public"."external_accounts" TO "service_role";
 
 
 
@@ -4912,6 +4970,7 @@ GRANT ALL ON TABLE "public"."meta_configurations" TO "anon";
 
 
 GRANT ALL ON TABLE "public"."module_permissions" TO "anon";
+GRANT ALL ON TABLE "public"."module_permissions" TO "service_role";
 
 
 
@@ -4936,6 +4995,7 @@ GRANT ALL ON TABLE "public"."organization_branding" TO "anon";
 
 
 GRANT ALL ON TABLE "public"."organization_details" TO "anon";
+GRANT ALL ON TABLE "public"."organization_details" TO "service_role";
 
 
 
@@ -4948,14 +5008,17 @@ GRANT ALL ON TABLE "public"."organization_invites" TO "anon";
 
 
 GRANT ALL ON TABLE "public"."organization_members" TO "anon";
+GRANT ALL ON TABLE "public"."organization_members" TO "service_role";
 
 
 
 GRANT ALL ON TABLE "public"."organization_role_permissions" TO "anon";
+GRANT ALL ON TABLE "public"."organization_role_permissions" TO "service_role";
 
 
 
 GRANT ALL ON TABLE "public"."organizations" TO "anon";
+GRANT ALL ON TABLE "public"."organizations" TO "service_role";
 
 
 
@@ -4980,6 +5043,7 @@ GRANT ALL ON TABLE "public"."permission_audit_logs" TO "anon";
 
 
 GRANT ALL ON TABLE "public"."phone_numbers" TO "anon";
+GRANT ALL ON TABLE "public"."phone_numbers" TO "service_role";
 
 
 
@@ -5016,6 +5080,7 @@ GRANT ALL ON TABLE "public"."reports" TO "anon";
 
 
 GRANT ALL ON TABLE "public"."roles" TO "anon";
+GRANT ALL ON TABLE "public"."roles" TO "service_role";
 
 
 
@@ -5032,6 +5097,7 @@ GRANT ALL ON TABLE "public"."stripe_webhook_events" TO "anon";
 
 
 GRANT ALL ON TABLE "public"."system_modules" TO "anon";
+GRANT ALL ON TABLE "public"."system_modules" TO "service_role";
 
 
 
@@ -5056,6 +5122,7 @@ GRANT ALL ON TABLE "public"."user_preferences" TO "anon";
 
 
 GRANT ALL ON TABLE "public"."users" TO "anon";
+GRANT ALL ON TABLE "public"."users" TO "service_role";
 
 
 
@@ -5068,6 +5135,7 @@ GRANT ALL ON TABLE "public"."wallets" TO "anon";
 
 
 GRANT ALL ON TABLE "public"."web3_wallets" TO "anon";
+GRANT ALL ON TABLE "public"."web3_wallets" TO "service_role";
 
 
 
@@ -5117,6 +5185,6 @@ GRANT ALL ON TABLE "public"."x_line_items" TO "anon";
 
 
 
-\unrestrict p0lp2W9vJdlYHSkWAxqZxBcnFWJaIoNabVnE3FHPTAdreWKo0FLZSjeL7OEpSzq
+\unrestrict RPukKclvyhr1UUtnQpw9S2gHoaAjh3SRLF3cDTVj1MHMkffSn6sKwwhjdfY5L4Y
 
 RESET ALL;

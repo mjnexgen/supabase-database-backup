@@ -4,7 +4,7 @@ SET session_replication_role = replica;
 -- PostgreSQL database dump
 --
 
-\restrict N46L4AzN0gWiWnmvDVIUlMBWplioV1qMFok3kifrVCujmYu0q4FqEwFj3Wzm1Mx
+\restrict lnqlUi3g0QkaAiHicsT3uObdydJDcsz4B8gRLetfnrMDhwHejocdUR6PeLIgvLn
 
 -- Dumped from database version 17.4
 -- Dumped by pg_dump version 17.6
@@ -239,6 +239,10 @@ e1a335cd-0852-4d60-868a-d79567feb539	user_32v6jnupeQLOSgPlPqcgX3xmFEf	n.nayak@is
 71984861-5b68-4235-92e1-d4dd2d4636d2	user_32vTcs1t7LQcrSluMEmQ2BBibbh	gagosay178@camjoint.com	Rohit	Sharma	\N	https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18yeTJqZ0p4UHo1UlZvSWtEaFF2MVNwQkh4Zm4iLCJyaWQiOiJ1c2VyXzMydlRjczF0N0xRY3JTbHVNRW1RMkJCaWJiaCIsImluaXRpYWxzIjoiUlMifQ	\N	\N	t	f	\N	2025-09-19 16:42:34.037+00	2025-09-19 16:42:34.037+00	\N	\N	\N	f	\N
 0d09d441-56e8-4c23-b4f3-d318c57e194a	user_32vVdfyq2rvlYz2LKqQSYqeSuE5	jopoh17182@camjoint.com	Test	New	\N	https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18yeTJqZ0p4UHo1UlZvSWtEaFF2MVNwQkh4Zm4iLCJyaWQiOiJ1c2VyXzMydlZkZnlxMnJ2bFl6MkxLcVFTWXFlU3VFNSIsImluaXRpYWxzIjoiVE4ifQ	\N	\N	t	f	\N	2025-09-19 16:59:02.32+00	2025-09-19 16:59:02.32+00	\N	\N	\N	f	\N
 e095a35a-23a6-43a5-94d2-0250a31c857b	user_32vW8Q5v0lrobiM9jeCe4oGYqDb	litahi6351@bitfami.com	Sikhar	Dhawan	\N	https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18yeTJqZ0p4UHo1UlZvSWtEaFF2MVNwQkh4Zm4iLCJyaWQiOiJ1c2VyXzMydlc4UTV2MGxyb2JpTTlqZUNlNG9HWXFEYiIsImluaXRpYWxzIjoiU0QifQ	\N	\N	t	f	\N	2025-09-19 17:03:09.076+00	2025-09-19 17:03:09.076+00	\N	\N	\N	f	\N
+d13eea9e-9208-4e3c-97c2-2de8e2276562	user_32vi8q3ND8b6SoSG0mrVhBXLyQj	lonni2367@tiffincrane.com	Caithlyn	Doe	\N	https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18yeTJqZ0p4UHo1UlZvSWtEaFF2MVNwQkh4Zm4iLCJyaWQiOiJ1c2VyXzMydmk4cTNORDhiNlNvU0cwbXJWaEJYTHlRaiIsImluaXRpYWxzIjoiQ0QifQ	\N	\N	t	f	\N	2025-09-19 22:28:25.187+00	2025-09-19 22:28:25.187+00	\N	\N	\N	f	\N
+afb57223-d78a-472b-8909-f2a9577f6198	user_32xfN7Jt2jZSijoT66tY6oMDIQt	9207tart@tiffincrane.com	Frank	Doe	\N	https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18yeTJqZ0p4UHo1UlZvSWtEaFF2MVNwQkh4Zm4iLCJyaWQiOiJ1c2VyXzMyeGZON0p0MmpaU2lqb1Q2NnRZNm9NRElRdCIsImluaXRpYWxzIjoiRkQifQ	https://www.gravatar.com/avatar?d=mp	\N	t	f	2025-09-20 11:18:20.175+00	2025-09-20 11:18:20.152+00	2025-09-20 11:30:44.398+00	idn_32xfJivPFprTqmBu4of3hyLPQ8q	\N	\N	f	4158bb4f-8350-4081-99e5-47aed79a9212
+7c979e16-1ad7-41de-a400-e0ab5684a45d	user_32xig8YGpkjjLc8IMVu3KnwM3hD	carissaazure@tiffincrane.com	Henry	Doe	\N	https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18yeTJqZ0p4UHo1UlZvSWtEaFF2MVNwQkh4Zm4iLCJyaWQiOiJ1c2VyXzMyeGlnOFlHcGtqakxjOElNVnUzS253TTNoRCIsImluaXRpYWxzIjoiSEQifQ	https://www.gravatar.com/avatar?d=mp	\N	t	f	2025-09-20 11:45:32.407+00	2025-09-20 11:45:32.378+00	2025-09-20 11:56:30.983+00	idn_32xieyzCY258DWrOX8lRv4rPdfU	\N	\N	f	4158bb4f-8350-4081-99e5-47aed79a9212
+4f69ce7b-a1c8-4fc9-9d23-e18d0231c6b6	user_32xne6Hspnq50q9dEtA93i66lr0	1332rodi@tiffincrane.com	Rose	rose	\N	https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18yeTJqZ0p4UHo1UlZvSWtEaFF2MVNwQkh4Zm4iLCJyaWQiOiJ1c2VyXzMyeG5lNkhzcG5xNTBxOWRFdEE5M2k2NmxyMCIsImluaXRpYWxzIjoiUlIifQ	https://www.gravatar.com/avatar?d=mp	\N	t	f	2025-09-20 12:26:34.724+00	2025-09-20 12:26:22.349+00	2025-09-20 12:27:10.717+00	idn_32xlDmgDifeKqcfDCAuiybzhGJy	\N	\N	f	4158bb4f-8350-4081-99e5-47aed79a9212
 \.
 
 
@@ -287,6 +291,9 @@ c3d56fd6-dfba-44a2-baf5-87ee7cb71597	google-new	main	\N	60338323-cdfb-43a2-b95a-
 2df205b4-33e8-4e4d-a633-3dd3cd37a062	vwhinsorg	main	\N	4b79f647-b3b2-4149-bbb0-9461f7c523fe	vwhinsorg	{}	UTC	USD	\N	\N	2025-09-15 08:54:28.096+00	2025-09-15 08:54:28.096+00	org_32jGEsWMPCwnkm2YjypEBhxY7ai
 2672c7ae-c165-477e-84d4-961b7bacbe74	sports	main	\N	\N	sports	{}	UTC	USD	\N	\N	2025-09-05 08:48:47.931+00	2025-09-05 08:48:47.931+00	org_32H0KGD2e82P0aMFWZ6PCekcud8
 212baea2-79e1-4943-bc1d-4369c6f986ba	dkm	main	\N	c8e9a134-a820-4ae3-a475-11d3e37694f5	DKM	{}	UTC	USD	\N	\N	2025-09-15 17:12:42.137+00	2025-09-15 17:12:42.137+00	org_32kEqcZYAHfyqX0f9QaDRrsMEkj
+06c8b845-14a1-449e-bedf-73412f444517	franklin-org	main	\N	afb57223-d78a-472b-8909-f2a9577f6198	franklin org	{}	UTC	USD	\N	\N	2025-09-20 11:30:41.599+00	2025-09-20 11:30:41.599+00	org_32xgoLFrQpoH3Wy7rn3xTanuJEC
+52d1a5a5-c87c-4755-90b7-b02e60ef41b6	henry-orgg	main	\N	7c979e16-1ad7-41de-a400-e0ab5684a45d	henry orgg	{}	UTC	USD	\N	\N	2025-09-20 11:56:26.306+00	2025-09-20 11:56:26.306+00	org_32xjwQL1y6W1ZbeXZC3V9ZlMOQl
+3fad9b9d-5eae-45f3-b7c3-01f07feda30d	hunter	main	\N	4f69ce7b-a1c8-4fc9-9d23-e18d0231c6b6	hunter 	{}	UTC	USD	\N	\N	2025-09-20 12:27:27.222+00	2025-09-20 12:27:27.222+00	org_32xniGmTdmIgUU2zi7OR2LkPs8f
 \.
 
 
@@ -1534,7 +1541,7 @@ COPY "public"."invoices" ("id", "org_id", "invoice_number", "amount", "currency"
 --
 
 COPY "public"."iqm_configurations" ("id", "workspace_id", "api_credentials", "default_settings", "viewability_settings", "status", "last_sync_at", "created_at", "updated_at") FROM stdin;
-c9767b7a-3668-4814-bdcb-9ad1f127abea	2148	{"url": "https://app.iqm.com/api/v3/ua/login", "email": "nitin.gupta@nexgenai.io", "headers": {"Accept": "application/json", "X-Iaa-Host": "app.iqm.com", "Content-Type": "application/json", "Authorization": "Basic cmF3LmdvcDpna0JkSEtDblU2RFdiSjlMTw=="}, "password": "%eZE6GKK>qru8qA>", "grantType": "password"}	{}	{}	active	2025-09-19 16:54:02.177+00	2025-09-05 09:30:20.138221+00	2025-09-19 16:54:02.181+00
+c9767b7a-3668-4814-bdcb-9ad1f127abea	2148	{"url": "https://app.iqm.com/api/v3/ua/login", "email": "nitin.gupta@nexgenai.io", "headers": {"Accept": "application/json", "X-Iaa-Host": "app.iqm.com", "Content-Type": "application/json", "Authorization": "Basic cmF3LmdvcDpna0JkSEtDblU2RFdiSjlMTw=="}, "password": "%eZE6GKK>qru8qA>", "grantType": "password"}	{}	{}	active	2025-09-20 16:19:00.919+00	2025-09-05 09:30:20.138221+00	2025-09-20 16:19:00.921+00
 \.
 
 
@@ -2089,6 +2096,9 @@ fec598dc-1b72-41d1-b8fa-c162e7bf2eb4	1d133e85-37ec-411c-8cf2-84f80888e8a6	t	2025
 aa8beb1a-c78a-46ed-8acb-df97c0966734	1d133e85-37ec-411c-8cf2-84f80888e8a6	t	2025-09-19 13:34:30.017+00	{"role": "campaign_manager", "industryFocus": "political_campaign"}	2025-09-19 13:34:30.018+00	2025-09-19 13:34:30.018+00	personal_info	0fd43a2c-1ac1-4316-a6a7-abf49f617af5
 e8a657e5-9d95-447f-9cb9-0ce6979af124	1d133e85-37ec-411c-8cf2-84f80888e8a6	t	2025-09-19 13:35:08.783+00	{"targetLocations": ["ca"], "campaignObjective": "awareness"}	2025-09-19 13:35:08.785+00	2025-09-19 13:35:08.785+00	campaign_preferences	0fd43a2c-1ac1-4316-a6a7-abf49f617af5
 7193fcce-a56c-4d5d-bcf2-997c607fc7dd	1d133e85-37ec-411c-8cf2-84f80888e8a6	t	2025-09-19 13:37:15.331+00	{"adPlatforms": ["ott"], "campaignTypes": ["video"]}	2025-09-19 13:37:15.332+00	2025-09-19 13:37:15.332+00	platform_preferences	0fd43a2c-1ac1-4316-a6a7-abf49f617af5
+3003dad2-e401-47ce-929b-16660896adb6	06c8b845-14a1-449e-bedf-73412f444517	t	2025-09-20 11:30:58.566+00	{"organizationId": "06c8b845-14a1-449e-bedf-73412f444517", "organizationCreated": true}	2025-09-20 11:30:50.565+00	2025-09-20 11:30:58.566+00	organization_setup	afb57223-d78a-472b-8909-f2a9577f6198
+c35ef21b-2207-4b91-a95f-cc25c549a4da	52d1a5a5-c87c-4755-90b7-b02e60ef41b6	t	2025-09-20 11:56:53.319+00	{"organizationId": "52d1a5a5-c87c-4755-90b7-b02e60ef41b6", "organizationCreated": true}	2025-09-20 11:56:43.518+00	2025-09-20 11:56:53.319+00	organization_setup	7c979e16-1ad7-41de-a400-e0ab5684a45d
+03b92e1f-6981-42ab-9df2-4bfe284a6365	3fad9b9d-5eae-45f3-b7c3-01f07feda30d	t	2025-09-20 12:27:48.372+00	{"organizationId": "3fad9b9d-5eae-45f3-b7c3-01f07feda30d", "organizationCreated": true}	2025-09-20 12:27:31.783+00	2025-09-20 12:27:48.372+00	organization_setup	4f69ce7b-a1c8-4fc9-9d23-e18d0231c6b6
 \.
 
 
@@ -2143,6 +2153,9 @@ c4766d3e-90d4-4235-93b0-9f6b45faebfb	bapu orgsaa		\N	\N	\N			\N	UTC	2025-09-15 1
 990b5369-7492-484f-89df-ec29e41a88d4	Test		\N	\N	\N			\N	UTC	2025-09-16 11:44:35.472+00	2025-09-16 11:44:35.472+00
 c3d56fd6-dfba-44a2-baf5-87ee7cb71597	google new		\N	\N	\N			\N	UTC	2025-09-16 17:11:01.957+00	2025-09-16 17:11:01.957+00
 38f476f2-af2a-42d0-b7e3-04b26b133496	react org	test	\N	\N	\N			\N	UTC	2025-09-17 15:12:58.777+00	2025-09-17 15:12:58.777+00
+06c8b845-14a1-449e-bedf-73412f444517	franklin org		\N	\N	\N			\N	UTC	2025-09-20 11:30:42.182+00	2025-09-20 11:30:42.182+00
+52d1a5a5-c87c-4755-90b7-b02e60ef41b6	henry orgg		\N	\N	\N			\N	UTC	2025-09-20 11:56:27.214+00	2025-09-20 11:56:27.214+00
+3fad9b9d-5eae-45f3-b7c3-01f07feda30d	hunter 		\N	\N	\N			\N	UTC	2025-09-20 12:27:28.373+00	2025-09-20 12:27:28.373+00
 \.
 
 
@@ -2232,6 +2245,9 @@ f0515619-598e-4cb4-b29c-344f934e9dc7	212baea2-79e1-4943-bc1d-4369c6f986ba	c8e9a1
 9a4db664-c2a1-4e00-b018-7aeb1fe9adbd	38f476f2-af2a-42d0-b7e3-04b26b133496	42af4654-de6f-4678-815c-f4efe7890deb	4158bb4f-8350-4081-99e5-47aed79a9212
 49703b51-c7d6-4dd7-a590-7ecd3b7a7d50	469f9695-140e-4627-9636-7d670617b454	0e8f1958-1782-40a7-8c78-19357ceb78a4	b9a94477-a95b-4d4a-b7d9-f0bc0a1f0d7d
 42bf36aa-1bf9-4dfc-938d-e3f0f3aef847	1d133e85-37ec-411c-8cf2-84f80888e8a6	0fd43a2c-1ac1-4316-a6a7-abf49f617af5	b9a94477-a95b-4d4a-b7d9-f0bc0a1f0d7d
+d4228ce0-a909-4dc7-8ef8-1b8120c61b30	06c8b845-14a1-449e-bedf-73412f444517	afb57223-d78a-472b-8909-f2a9577f6198	4158bb4f-8350-4081-99e5-47aed79a9212
+e7a4abc7-3ef7-4a8f-8ba8-62c2de6e35bc	52d1a5a5-c87c-4755-90b7-b02e60ef41b6	7c979e16-1ad7-41de-a400-e0ab5684a45d	4158bb4f-8350-4081-99e5-47aed79a9212
+d48fc80a-a498-4aab-ad8f-da852aedd831	3fad9b9d-5eae-45f3-b7c3-01f07feda30d	4f69ce7b-a1c8-4fc9-9d23-e18d0231c6b6	4158bb4f-8350-4081-99e5-47aed79a9212
 \.
 
 
@@ -2762,9 +2778,13 @@ fd9f3d7d-c551-4bd7-bca2-154be3fde54e	light	{"sms": false, "push": true, "email":
 3bbf6631-ff9d-492f-8245-1196174d2ae8	light	{"sms": false, "push": true, "email": true}	{}	US/Eastern	USD	2025-09-12 08:21:45.053+00	2025-09-19 13:38:49.423+00	[{"orgId": "1d133e85-37ec-411c-8cf2-84f80888e8a6", "steps": [{"stepData": {"adPlatforms": ["ott"], "campaignTypes": ["video"]}, "stepType": "platform_preferences", "stepOrder": 1, "completedAt": "2025-09-19T13:38:49.421Z"}], "userType": "agency", "totalSteps": 1, "completedAt": "2025-09-19T13:38:49.422Z"}]
 0d09d441-56e8-4c23-b4f3-d318c57e194a	light	{"sms": false, "push": true, "email": true}	{}	US/Eastern	USD	2025-09-19 16:59:06.505+00	2025-09-19 16:59:06.505+00	[]
 d1d62436-8860-4fdb-8ae5-dbbd586d1a66	light	{"sms": false, "push": true, "email": true}	{}	US/Pacific	USD	2025-09-11 18:01:03.139+00	2025-09-19 09:40:47.588+00	[]
+d13eea9e-9208-4e3c-97c2-2de8e2276562	light	{"sms": false, "push": true, "email": true}	{}	US/Eastern	USD	2025-09-19 22:28:30.161+00	2025-09-19 22:28:30.161+00	[]
 0e8f1958-1782-40a7-8c78-19357ceb78a4	light	{"sms": false, "push": true, "email": true}	{}	US/Eastern	USD	2025-09-19 10:56:40.714+00	2025-09-19 10:58:34.544+00	[{"orgId": "469f9695-140e-4627-9636-7d670617b454", "steps": [{"stepData": {"joinedAt": "2025-09-19T10:56:32.361Z", "inviteCode": "PTPKAK3X", "joinMethod": "invite_accept", "organizationId": "469f9695-140e-4627-9636-7d670617b454", "organizationName": "Manash", "organizationJoined": true}, "stepType": "organization_setup", "stepOrder": 1, "completedAt": "2025-09-19T10:56:40.712Z"}, {"stepData": {"role": "campaign_manager", "industryFocus": "government_agency"}, "stepType": "personal_info", "stepOrder": 2, "completedAt": "2025-09-19T10:58:08.390Z"}, {"stepData": {"targetLocations": ["ny"], "campaignObjective": "awareness"}, "stepType": "campaign_preferences", "stepOrder": 3, "completedAt": "2025-09-19T10:58:21.021Z"}, {"stepData": {"adPlatforms": ["ott"], "campaignTypes": ["video", "display"]}, "stepType": "platform_preferences", "stepOrder": 4, "completedAt": "2025-09-19T10:58:34.543Z"}], "userType": "individual", "totalSteps": 4, "completedAt": "2025-09-19T10:58:34.543Z"}]
 040c91a3-6507-4dfc-94f0-1c32bcad8e72	light	{"sms": false, "push": true, "email": true}	\N	UTC	USD	2025-09-19 12:46:02.882+00	2025-09-19 12:46:02.882+00	[]
+afb57223-d78a-472b-8909-f2a9577f6198	light	{"sms": false, "push": true, "email": true}	{}	US/Eastern	USD	2025-09-20 11:25:39.594+00	2025-09-20 11:31:04.786+00	[{"orgId": "06c8b845-14a1-449e-bedf-73412f444517", "steps": [{"stepData": {"organizationId": "06c8b845-14a1-449e-bedf-73412f444517", "organizationCreated": true}, "stepType": "organization_setup", "stepOrder": 1, "completedAt": "2025-09-20T11:31:04.783Z"}], "userType": "agency", "totalSteps": 1, "completedAt": "2025-09-20T11:31:04.784Z"}]
 e1a335cd-0852-4d60-868a-d79567feb539	light	{"sms": false, "push": true, "email": true}	{}	US/Eastern	USD	2025-09-19 13:34:38.451+00	2025-09-19 13:34:38.451+00	[]
+7c979e16-1ad7-41de-a400-e0ab5684a45d	light	{"sms": false, "push": true, "email": true}	{}	US/Eastern	USD	2025-09-20 11:46:24.544+00	2025-09-20 11:57:01.116+00	[{"orgId": "52d1a5a5-c87c-4755-90b7-b02e60ef41b6", "steps": [{"stepData": {"organizationId": "52d1a5a5-c87c-4755-90b7-b02e60ef41b6", "organizationCreated": true}, "stepType": "organization_setup", "stepOrder": 1, "completedAt": "2025-09-20T11:57:01.115Z"}], "userType": "agency", "totalSteps": 1, "completedAt": "2025-09-20T11:57:01.115Z"}]
+4f69ce7b-a1c8-4fc9-9d23-e18d0231c6b6	light	{"sms": false, "push": true, "email": true}	{}	US/Eastern	USD	2025-09-20 12:27:11.773+00	2025-09-20 12:27:54.468+00	[{"orgId": "3fad9b9d-5eae-45f3-b7c3-01f07feda30d", "steps": [{"stepData": {"organizationId": "3fad9b9d-5eae-45f3-b7c3-01f07feda30d", "organizationCreated": true}, "stepType": "organization_setup", "stepOrder": 1, "completedAt": "2025-09-20T12:27:54.467Z"}], "userType": "agency", "totalSteps": 1, "completedAt": "2025-09-20T12:27:54.467Z"}]
 \.
 
 
@@ -2827,8 +2847,11 @@ ec57eca8-4956-4bed-85ad-6f1723a08270	96af5140-a4f9-4a56-ac20-57dcbeaeaf85	\N	ish
 f4ae3849-725c-4323-b4fb-83d10ca38ce9	a9b07853-cb7a-4e03-89af-74aaa93ddeaa	rishav.com	acme	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	Default Company	https://example.com	\N	\N	2025-09-09 09:43:44.772	2025-09-15 10:05:20.367
 fab9d4eb-5eb3-46d6-a3bb-f27809dbaa62	cab27154-ddd0-4c12-bcf3-d7d977d1f8be	\N	tech-21orgqw	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	tech 21orgqw	https://tech-21orgqw.cpulse.com	\N	\N	2025-09-15 12:36:38.999	2025-09-15 12:36:38.999
 0cb3f31f-c7c7-4162-bb62-6191994a1d91	3bbf6631-ff9d-492f-8245-1196174d2ae8	ishvara.cpulse.localhost	\N	https://ngmshesdmwcwygwjetfe.supabase.co/storage/v1/object/public/whitelabelled-agency/whitelabelled-agency/temp-1758121217718-07lub0rg/logo/logo-1758121217718-36689j-IshvaraTech.png	https://ngmshesdmwcwygwjetfe.supabase.co/storage/v1/object/public/whitelabelled-agency/whitelabelled-agency/temp-1758121217718-07lub0rg/logo/logo-1758121217718-36689j-IshvaraTech.png	\N	\N	\N	\N	#ffffff	#ffffff	test description	soumya.behera@ishvaratech.com	soumya.behera@ishvaratech.com	\N	\N	Ishvara	https://example.com	{"VITE_CLERK_PUBLISHABLE_KEY": "pk_test_aW50ZW5zZS1wZWxpY2FuLTI1LmNsZXJrLmFjY291bnRzLmRldiQ"}	80082ad8-1d81-4bd4-aacc-cbb740d43e0d	2025-09-17 17:23:56.307	2025-09-17 17:23:56.307
+06c8b845-14a1-449e-bedf-73412f444517	afb57223-d78a-472b-8909-f2a9577f6198	\N	franklin-org	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	franklin org	https://franklin-org.cpulse.com	\N	\N	2025-09-20 11:30:42.711	2025-09-20 11:30:42.711
+52d1a5a5-c87c-4755-90b7-b02e60ef41b6	7c979e16-1ad7-41de-a400-e0ab5684a45d	\N	henry-orgg	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	henry orgg	https://henry-orgg.cpulse.com	\N	\N	2025-09-20 11:56:28.382	2025-09-20 11:56:28.382
 c3d56fd6-dfba-44a2-baf5-87ee7cb71597	60338323-cdfb-43a2-b95a-a327caaaff18	agency1.cpulse.localhost	agency1.cpulse	https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJg75LWB1zIJt1VTZO7O68yKciaDSkk3KMdw&s	https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/1200px-Google_2015_logo.svg.png	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	google new	http://agency1.cpulse.localhost	{"VITE_CLERK_PUBLISHABLE_KEY": "pk_test_cmVuZXdpbmctY29sdC0yNi5jbGVyay5hY2NvdW50cy5kZXYk"}	e2d7f763-bf08-42dd-ac0a-40b10a612f78	2025-09-16 17:11:02.585	2025-09-16 17:11:02.585
 38f476f2-af2a-42d0-b7e3-04b26b133496	42af4654-de6f-4678-815c-f4efe7890deb	\N	react-org	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	react org	https://react-org.cpulse.com	\N	\N	2025-09-17 15:12:59.925	2025-09-17 15:12:59.925
+3fad9b9d-5eae-45f3-b7c3-01f07feda30d	4f69ce7b-a1c8-4fc9-9d23-e18d0231c6b6	\N	hunter	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	hunter 	https://hunter.cpulse.com	\N	\N	2025-09-20 12:27:28.919	2025-09-20 12:27:28.919
 \.
 
 
@@ -3004,6 +3027,6 @@ SELECT pg_catalog.setval('"auth"."refresh_tokens_id_seq"', 1, false);
 -- PostgreSQL database dump complete
 --
 
-\unrestrict N46L4AzN0gWiWnmvDVIUlMBWplioV1qMFok3kifrVCujmYu0q4FqEwFj3Wzm1Mx
+\unrestrict lnqlUi3g0QkaAiHicsT3uObdydJDcsz4B8gRLetfnrMDhwHejocdUR6PeLIgvLn
 
 RESET ALL;
