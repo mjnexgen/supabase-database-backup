@@ -1,5 +1,5 @@
 
-\restrict ta2eTyFcLhNq9VBpkIyF1BWyBhWfScbHeasn2oCD9X63A0amc8PtmqUWtnqTBlp
+\restrict JqXUElobhdPEe5kyRKuZaAsQf3komt62r0w1D2eyNi5a5930PApzvoiv8eSdrhm
 
 
 SET statement_timeout = 0;
@@ -192,95 +192,6 @@ CREATE TYPE "public"."audience_type" AS ENUM (
 
 
 ALTER TYPE "public"."audience_type" OWNER TO "postgres";
-
-
-CREATE TYPE "public"."audit_action_type" AS ENUM (
-    'CREATE',
-    'READ',
-    'UPDATE',
-    'DELETE',
-    'LOGIN',
-    'LOGOUT',
-    'UPLOAD',
-    'DOWNLOAD',
-    'EXPORT',
-    'IMPORT',
-    'APPROVE',
-    'REJECT',
-    'SUBMIT',
-    'CANCEL',
-    'ACTIVATE',
-    'DEACTIVATE',
-    'INVITE',
-    'ACCEPT_INVITE',
-    'REJECT_INVITE',
-    'RESET_PASSWORD',
-    'CHANGE_PASSWORD',
-    'UPDATE_PROFILE',
-    'UPDATE_PREFERENCES',
-    'VIEW_ANALYTICS',
-    'MANAGE_USERS',
-    'MANAGE_ROLES',
-    'MANAGE_PERMISSIONS',
-    'BILLING_ACTION',
-    'PAYMENT_ACTION',
-    'SYSTEM_CONFIG',
-    'API_CALL',
-    'WEBHOOK_RECEIVED',
-    'EXTERNAL_INTEGRATION',
-    'CUSTOM'
-);
-
-
-ALTER TYPE "public"."audit_action_type" OWNER TO "postgres";
-
-
-CREATE TYPE "public"."audit_actor_type" AS ENUM (
-    'USER',
-    'AGENT',
-    'SYSTEM',
-    'ANONYMOUS',
-    'API',
-    'WEBHOOK',
-    'CRON',
-    'EXTERNAL'
-);
-
-
-ALTER TYPE "public"."audit_actor_type" OWNER TO "postgres";
-
-
-CREATE TYPE "public"."audit_resource_type" AS ENUM (
-    'USER',
-    'ORGANIZATION',
-    'CAMPAIGN',
-    'CREATIVE',
-    'AUDIENCE',
-    'INSERTION_ORDER',
-    'BUDGET',
-    'PAYMENT',
-    'ROLE',
-    'PERMISSION',
-    'MODULE',
-    'SETTINGS',
-    'PREFERENCES',
-    'BRANDING',
-    'INVITATION',
-    'SESSION',
-    'ANALYTICS',
-    'REPORT',
-    'EXPORT',
-    'UPLOAD',
-    'WEBHOOK',
-    'API_KEY',
-    'CREDENTIAL',
-    'INTEGRATION',
-    'SYSTEM',
-    'OTHER'
-);
-
-
-ALTER TYPE "public"."audit_resource_type" OWNER TO "postgres";
 
 
 CREATE TYPE "public"."audit_status" AS ENUM (
@@ -1103,38 +1014,6 @@ CREATE TABLE IF NOT EXISTS "public"."audiences" (
 ALTER TABLE "public"."audiences" OWNER TO "postgres";
 
 
-CREATE TABLE IF NOT EXISTS "public"."audit_logs" (
-    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "user_id" "uuid",
-    "organization_id" "uuid",
-    "actor_type" "public"."audit_actor_type" DEFAULT 'USER'::"public"."audit_actor_type" NOT NULL,
-    "action" "public"."audit_action_type" NOT NULL,
-    "resource_type" "public"."audit_resource_type",
-    "resource_id" "text",
-    "endpoint" character varying(255) NOT NULL,
-    "method" character varying(10) NOT NULL,
-    "status_code" integer NOT NULL,
-    "ip_address" "text",
-    "user_agent" "text",
-    "session_id" "text",
-    "request_data" "jsonb",
-    "response_summary" "jsonb",
-    "error_message" "text",
-    "duration_ms" integer,
-    "metadata" "jsonb",
-    "tags" "text"[] DEFAULT ARRAY[]::"text"[],
-    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "status" character varying(20) DEFAULT 'success'::character varying NOT NULL,
-    "request_id" character varying(100),
-    "error_code" character varying(50),
-    CONSTRAINT "audit_logs_status_check" CHECK ((("status")::"text" = ANY ((ARRAY['success'::character varying, 'failure'::character varying, 'pending'::character varying, 'timeout'::character varying])::"text"[])))
-);
-
-
-ALTER TABLE "public"."audit_logs" OWNER TO "postgres";
-
-
 CREATE TABLE IF NOT EXISTS "public"."campaign_alerts" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "org_id" "uuid" NOT NULL,
@@ -1951,7 +1830,9 @@ CREATE TABLE IF NOT EXISTS "public"."organizations" (
     "tax_information" "jsonb",
     "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "vendor_org_id" "text"
+    "vendor_org_id" "text",
+    "agencyMailed" boolean DEFAULT false NOT NULL,
+    "agencySetup" boolean DEFAULT false NOT NULL
 );
 
 
@@ -2692,11 +2573,6 @@ ALTER TABLE ONLY "public"."audiences"
 
 
 
-ALTER TABLE ONLY "public"."audit_logs"
-    ADD CONSTRAINT "audit_logs_pkey" PRIMARY KEY ("id");
-
-
-
 ALTER TABLE ONLY "public"."campaign_alerts"
     ADD CONSTRAINT "campaign_alerts_pkey" PRIMARY KEY ("id");
 
@@ -3098,46 +2974,6 @@ CREATE INDEX "analytics_aggregated_org_id_date_idx" ON "public"."analytics_aggre
 
 
 CREATE UNIQUE INDEX "analytics_data_org_id_campaign_id_platform_date_key" ON "public"."analytics_data" USING "btree" ("org_id", "campaign_id", "platform", "date");
-
-
-
-CREATE INDEX "audit_logs_action_idx" ON "public"."audit_logs" USING "btree" ("action");
-
-
-
-CREATE INDEX "audit_logs_actor_type_created_at_idx" ON "public"."audit_logs" USING "btree" ("actor_type", "created_at");
-
-
-
-CREATE INDEX "audit_logs_created_at_idx" ON "public"."audit_logs" USING "btree" ("created_at");
-
-
-
-CREATE INDEX "audit_logs_organization_id_action_created_at_idx" ON "public"."audit_logs" USING "btree" ("organization_id", "action", "created_at");
-
-
-
-CREATE INDEX "audit_logs_organization_id_idx" ON "public"."audit_logs" USING "btree" ("organization_id");
-
-
-
-CREATE INDEX "audit_logs_resource_type_resource_id_idx" ON "public"."audit_logs" USING "btree" ("resource_type", "resource_id");
-
-
-
-CREATE INDEX "audit_logs_session_id_idx" ON "public"."audit_logs" USING "btree" ("session_id");
-
-
-
-CREATE INDEX "audit_logs_status_code_created_at_idx" ON "public"."audit_logs" USING "btree" ("status_code", "created_at");
-
-
-
-CREATE INDEX "audit_logs_user_id_created_at_idx" ON "public"."audit_logs" USING "btree" ("user_id", "created_at");
-
-
-
-CREATE INDEX "audit_logs_user_id_idx" ON "public"."audit_logs" USING "btree" ("user_id");
 
 
 
@@ -3717,16 +3553,6 @@ ALTER TABLE ONLY "public"."audiences"
 
 ALTER TABLE ONLY "public"."audiences"
     ADD CONSTRAINT "audiences_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "public"."audit_logs"
-    ADD CONSTRAINT "audit_logs_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE SET NULL;
-
-
-
-ALTER TABLE ONLY "public"."audit_logs"
-    ADD CONSTRAINT "audit_logs_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON UPDATE CASCADE ON DELETE SET NULL;
 
 
 
@@ -5185,6 +5011,6 @@ GRANT ALL ON TABLE "public"."x_line_items" TO "anon";
 
 
 
-\unrestrict ta2eTyFcLhNq9VBpkIyF1BWyBhWfScbHeasn2oCD9X63A0amc8PtmqUWtnqTBlp
+\unrestrict JqXUElobhdPEe5kyRKuZaAsQf3komt62r0w1D2eyNi5a5930PApzvoiv8eSdrhm
 
 RESET ALL;
