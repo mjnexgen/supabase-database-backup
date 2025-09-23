@@ -1,5 +1,4 @@
 
-\restrict JqXUElobhdPEe5kyRKuZaAsQf3komt62r0w1D2eyNi5a5930PApzvoiv8eSdrhm
 
 
 SET statement_timeout = 0;
@@ -2106,7 +2105,9 @@ CREATE TABLE IF NOT EXISTS "public"."refunds" (
     "refunded_by" "uuid",
     "processed_at" timestamp(6) with time zone,
     "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "platform_specific_campaign_id" "uuid",
+    "platform" "public"."platform"
 );
 
 
@@ -3321,6 +3322,14 @@ CREATE INDEX "refunds_payment_log_id_idx" ON "public"."refunds" USING "btree" ("
 
 
 
+CREATE INDEX "refunds_platform_idx" ON "public"."refunds" USING "btree" ("platform");
+
+
+
+CREATE INDEX "refunds_platform_specific_campaign_id_idx" ON "public"."refunds" USING "btree" ("platform_specific_campaign_id");
+
+
+
 CREATE INDEX "refunds_status_idx" ON "public"."refunds" USING "btree" ("status");
 
 
@@ -4118,6 +4127,11 @@ ALTER TABLE ONLY "public"."refunds"
 
 ALTER TABLE ONLY "public"."refunds"
     ADD CONSTRAINT "refunds_payment_log_id_fkey" FOREIGN KEY ("payment_log_id") REFERENCES "public"."payment_logs"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."refunds"
+    ADD CONSTRAINT "refunds_platform_specific_campaign_id_fkey" FOREIGN KEY ("platform_specific_campaign_id") REFERENCES "public"."platform_specific_campaigns"("id") ON UPDATE CASCADE ON DELETE SET NULL;
 
 
 
@@ -5011,6 +5025,5 @@ GRANT ALL ON TABLE "public"."x_line_items" TO "anon";
 
 
 
-\unrestrict JqXUElobhdPEe5kyRKuZaAsQf3komt62r0w1D2eyNi5a5930PApzvoiv8eSdrhm
 
 RESET ALL;
