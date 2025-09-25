@@ -1166,7 +1166,9 @@ CREATE TABLE IF NOT EXISTS "public"."campaigns" (
     "submitted_by" "uuid",
     "campaign_funding_status" "public"."io_funding_status" DEFAULT 'awaiting_payment'::"public"."io_funding_status" NOT NULL,
     "current_balance" numeric(15,2) DEFAULT 0 NOT NULL,
-    "total_commision" numeric(15,2)
+    "total_commision" numeric(15,2),
+    "platform_daily_budgets" "jsonb",
+    "platform_max_bids" "jsonb"
 );
 
 
@@ -1212,7 +1214,10 @@ CREATE TABLE IF NOT EXISTS "public"."domain_alias" (
     "redirect_to_host" "text" NOT NULL,
     "active_until" timestamp(6) with time zone,
     "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "is_custom_domain" boolean DEFAULT false NOT NULL,
+    "is_verified" boolean DEFAULT false NOT NULL,
+    "verification_token" "text"
 );
 
 
