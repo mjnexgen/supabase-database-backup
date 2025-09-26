@@ -20,6 +20,13 @@ CREATE EXTENSION IF NOT EXISTS "pg_cron" WITH SCHEMA "pg_catalog";
 
 
 
+CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
+
+
+
+
+
+
 
 
 ALTER SCHEMA "public" OWNER TO "postgres";
@@ -3475,6 +3482,10 @@ CREATE UNIQUE INDEX "x_configurations_org_id_account_id_key" ON "public"."x_conf
 
 
 
+CREATE OR REPLACE TRIGGER "Agency approval infra creation webhook" AFTER UPDATE ON "public"."agency_applications" FOR EACH ROW EXECUTE FUNCTION "supabase_functions"."http_request"('https://bvpuk-13-234-184-236.a.free.pinggy.link/api/v1/webhook/whitelabel/supabase', 'POST', '{"Content-type":"application/json"}', '{"test_param":"test_value"}', '5000');
+
+
+
 ALTER TABLE ONLY "public"."ad_sets"
     ADD CONSTRAINT "ad_sets_platform_specific_campaign_id_fkey" FOREIGN KEY ("platform_specific_campaign_id") REFERENCES "public"."platform_specific_campaigns"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
@@ -4324,6 +4335,9 @@ ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
 
 
 ALTER PUBLICATION "supabase_realtime" ADD TABLE ONLY "public"."notifications";
+
+
+
 
 
 
