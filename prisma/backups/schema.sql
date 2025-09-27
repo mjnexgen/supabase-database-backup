@@ -147,7 +147,9 @@ ALTER TYPE "public"."api_call_status" OWNER TO "postgres";
 CREATE TYPE "public"."application_status" AS ENUM (
     'pending',
     'approved',
-    'rejected'
+    'rejected',
+    'processing',
+    'failed'
 );
 
 
@@ -2431,11 +2433,16 @@ CREATE TABLE IF NOT EXISTS "public"."white_label_settings" (
     "config" "jsonb",
     "whitelabel_config_id" "uuid",
     "createdAt" timestamp(3) without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updatedAt" timestamp(3) without time zone NOT NULL
+    "updatedAt" timestamp(3) without time zone NOT NULL,
+    "platformFee" numeric(10,2)
 );
 
 
 ALTER TABLE "public"."white_label_settings" OWNER TO "postgres";
+
+
+COMMENT ON COLUMN "public"."white_label_settings"."platformFee" IS 'Platform fee percentage (0.00 to 99999999.99)';
+
 
 
 CREATE TABLE IF NOT EXISTS "public"."whitelabel_config" (
@@ -3483,6 +3490,10 @@ CREATE UNIQUE INDEX "x_configurations_org_id_account_id_key" ON "public"."x_conf
 
 
 CREATE OR REPLACE TRIGGER "Agency approval infra creation webhook" AFTER UPDATE ON "public"."agency_applications" FOR EACH ROW EXECUTE FUNCTION "supabase_functions"."http_request"('https://bvpuk-13-234-184-236.a.free.pinggy.link/api/v1/webhook/whitelabel/supabase', 'POST', '{"Content-type":"application/json"}', '{"test_param":"test_value"}', '5000');
+
+
+
+CREATE OR REPLACE TRIGGER "DEV-Agency approval infra creation webhook" AFTER UPDATE ON "public"."agency_applications" FOR EACH ROW EXECUTE FUNCTION "supabase_functions"."http_request"('https://dev-cp-app.nexgenaitechnology.io/api/v1/webhook/whitelabel/supabase', 'POST', '{"Content-type":"application/json"}', '{}', '5000');
 
 
 
