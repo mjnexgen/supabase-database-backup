@@ -3489,11 +3489,11 @@ CREATE UNIQUE INDEX "x_configurations_org_id_account_id_key" ON "public"."x_conf
 
 
 
-CREATE OR REPLACE TRIGGER "Agency approval infra creation webhook" AFTER UPDATE ON "public"."agency_applications" FOR EACH ROW EXECUTE FUNCTION "supabase_functions"."http_request"('https://bvpuk-13-234-184-236.a.free.pinggy.link/api/v1/webhook/whitelabel/supabase', 'POST', '{"Content-type":"application/json"}', '{"test_param":"test_value"}', '5000');
+CREATE OR REPLACE TRIGGER "Agency approval infra creation webhook" AFTER UPDATE ON "public"."agency_applications" FOR EACH ROW EXECUTE FUNCTION "supabase_functions"."http_request"('https://webhook.site/5bf793c0-106e-456c-ae0c-f487e234472b', 'POST', '{"Content-type":"application/json"}', '{"test_param":"test_value"}', '5000');
 
 
 
-CREATE OR REPLACE TRIGGER "DEV-Agency approval infra creation webhook" AFTER UPDATE ON "public"."agency_applications" FOR EACH ROW EXECUTE FUNCTION "supabase_functions"."http_request"('https://dev-cp-app.nexgenaitechnology.io/api/v1/webhook/whitelabel/supabase', 'POST', '{"Content-type":"application/json"}', '{}', '5000');
+CREATE OR REPLACE TRIGGER "DEV-Agency approval infra creation webhook" AFTER UPDATE ON "public"."agency_applications" FOR EACH ROW EXECUTE FUNCTION "supabase_functions"."http_request"('https://dev-cp-api.nexgenaitechnology.io/api/v1/webhook/whitelabel/supabase', 'POST', '{"Content-type":"application/json"}', '{}', '5000');
 
 
 
