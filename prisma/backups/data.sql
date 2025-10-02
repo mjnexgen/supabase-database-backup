@@ -4,7 +4,7 @@ SET session_replication_role = replica;
 -- PostgreSQL database dump
 --
 
--- \restrict dx9oDfjCKSo0JKqAdTBhrT3xtLtham8OoQjbwr6PElWSWSiYrCld8zk4q6oCkP9
+-- \restrict Ic0o5nVyEpXeIWFmJSMP343zZZFbjtE5gpYjuc8pkAWXgOEHe4QnJbiRBnFctSa
 
 -- Dumped from database version 17.4
 -- Dumped by pg_dump version 17.6
@@ -2334,7 +2334,7 @@ COPY "public"."invoices" ("id", "org_id", "invoice_number", "amount", "currency"
 --
 
 COPY "public"."iqm_configurations" ("id", "workspace_id", "api_credentials", "default_settings", "viewability_settings", "status", "last_sync_at", "created_at", "updated_at") FROM stdin;
-c9767b7a-3668-4814-bdcb-9ad1f127abea	2148	{"url": "https://app.iqm.com/api/v3/ua/login", "email": "nitin.gupta@nexgenai.io", "headers": {"Accept": "application/json", "X-Iaa-Host": "app.iqm.com", "Content-Type": "application/json", "Authorization": "Basic cmF3LmdvcDpna0JkSEtDblU2RFdiSjlMTw=="}, "password": "%eZE6GKK>qru8qA>", "grantType": "password"}	{}	{}	active	2025-10-01 17:47:41.948+00	2025-09-05 09:30:20.138221+00	2025-10-01 17:47:41.95+00
+c9767b7a-3668-4814-bdcb-9ad1f127abea	2148	{"url": "https://app.iqm.com/api/v3/ua/login", "email": "nitin.gupta@nexgenai.io", "headers": {"Accept": "application/json", "X-Iaa-Host": "app.iqm.com", "Content-Type": "application/json", "Authorization": "Basic cmF3LmdvcDpna0JkSEtDblU2RFdiSjlMTw=="}, "password": "%eZE6GKK>qru8qA>", "grantType": "password"}	{}	{}	active	2025-10-02 12:39:12.608+00	2025-09-05 09:30:20.138221+00	2025-10-02 12:39:12.609+00
 \.
 
 
@@ -5265,6 +5265,6 @@ SELECT pg_catalog.setval('"supabase_functions"."hooks_id_seq"', 55, true);
 -- PostgreSQL database dump complete
 --
 
--- \unrestrict dx9oDfjCKSo0JKqAdTBhrT3xtLtham8OoQjbwr6PElWSWSiYrCld8zk4q6oCkP9
+-- \unrestrict Ic0o5nVyEpXeIWFmJSMP343zZZFbjtE5gpYjuc8pkAWXgOEHe4QnJbiRBnFctSa
 
 RESET ALL;
