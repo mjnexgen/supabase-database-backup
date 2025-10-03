@@ -378,7 +378,11 @@ CREATE TYPE "public"."email_template_type" AS ENUM (
     'user_invitation',
     'password_reset',
     'system_notification',
-    'custom'
+    'custom',
+    'payment_success',
+    'payment_failure',
+    'refund_success',
+    'refund_failure'
 );
 
 
