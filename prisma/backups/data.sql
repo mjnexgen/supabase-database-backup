@@ -4,7 +4,7 @@ SET session_replication_role = replica;
 -- PostgreSQL database dump
 --
 
--- \restrict khsasrVRkdcf6jdQIauztZbzQjtDPNhnGkApXKs1RyiWcDujTQXC37xxrOM5IpI
+-- \restrict yiuRsJrNARPZiS4oSrLbTuwzfxFP2TQzIWDAAIxUdqA0DRCuo7XVjngeInNfefA
 
 -- Dumped from database version 17.4
 -- Dumped by pg_dump version 17.6
@@ -314,6 +314,7 @@ e07e8ba8-c7b6-4d65-9841-e95b38166abc	user_33YL0nSuJwjoI6bDNCBbAZK4S95	copperjoel
 e4b2d645-16a9-4c2b-8d4b-fba1244431c7	user_33YNACwe210jttxEYD5UrLk17mT	wetipor809@erynka.com	pratham	rana	\N	https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18yeTJqZ0p4UHo1UlZvSWtEaFF2MVNwQkh4Zm4iLCJyaWQiOiJ1c2VyXzMzWU5BQ3dlMjEwanR0eEVZRDVVckxrMTdtVCIsImluaXRpYWxzIjoiUFIifQ	https://www.gravatar.com/avatar?d=mp	\N	t	f	2025-10-03 11:12:40.008+00	2025-10-03 11:11:39.991+00	2025-10-03 11:12:40.375+00	idn_33YNAEEZsQXRWUsvDsecjVj0lmZ	\N	\N	f	b9a94477-a95b-4d4a-b7d9-f0bc0a1f0d7d
 eef5288e-d1c6-4937-88e5-d69e0cd10c70	user_33YJZhQOspGnlnk9NLL5ktaP5TG	vipece7754@erynka.com	lisa	dash	\N	https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18yeTJqZ0p4UHo1UlZvSWtEaFF2MVNwQkh4Zm4iLCJyaWQiOiJ1c2VyXzMzWUpaaFFPc3BHbmxuazlOTEw1a3RhUDVURyIsImluaXRpYWxzIjoiTEQifQ	https://www.gravatar.com/avatar?d=mp	\N	t	f	2025-10-03 10:42:44.116+00	2025-10-03 10:42:09.79+00	2025-10-03 11:30:36.569+00	idn_33YJVJzztIJkRKgEKVz2qPTLTra	\N	\N	f	4158bb4f-8350-4081-99e5-47aed79a9212
 45c3240f-2b72-4ef7-b77a-2dee1f8dd67e	user_33YfSe62Z2KHGQWj8vNkBnSP87U	qyqipywe@denipl.net	Facebook	Doe	\N	https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18yeTJqZ0p4UHo1UlZvSWtEaFF2MVNwQkh4Zm4iLCJyaWQiOiJ1c2VyXzMzWWZTZTYyWjJLSEdRV2o4dk5rQm5TUDg3VSIsImluaXRpYWxzIjoiRkQifQ	https://www.gravatar.com/avatar?d=mp	\N	t	f	2025-10-03 13:42:21.992+00	2025-10-03 13:42:06.127+00	2025-10-03 13:43:01.218+00	idn_33YfPARwzXJRgjaGFZrWwfyt674	\N	\N	f	4158bb4f-8350-4081-99e5-47aed79a9212
+c76b6a08-66b3-4c62-a865-18c0d85952d7	user_33kK1YJauP67qSD7uftywZIPzF8	josi8439@tiffincrane.com	Manish	Soni	\N	https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18yeTJqZ0p4UHo1UlZvSWtEaFF2MVNwQkh4Zm4iLCJyaWQiOiJ1c2VyXzMza0sxWUphdVA2N3FTRDd1ZnR5d1pJUHpGOCIsImluaXRpYWxzIjoiTVMifQ	https://www.gravatar.com/avatar?d=mp	\N	t	f	2025-10-07 16:43:35.505+00	2025-10-07 16:43:35.496+00	2025-10-07 16:43:36.656+00	idn_33kJtK6kg7PkbytvGjaqzYiff0O	\N	\N	f	\N
 789325b1-dbca-4881-a545-4e216a188b59	user_33YtZeSvgVCSxKSovjODqJ7XStj	5146moccasin@tiffincrane.com	Face agency	User	\N	https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18yeTJqZ0p4UHo1UlZvSWtEaFF2MVNwQkh4Zm4iLCJyaWQiOiJ1c2VyXzMzWXRaZVN2Z1ZDU3hLU292ak9EcUo3WFN0aiIsImluaXRpYWxzIjoiRlUifQ	https://www.gravatar.com/avatar?d=mp	\N	t	f	2025-10-03 15:38:34.442+00	2025-10-03 15:38:09.698+00	2025-10-03 15:39:10.313+00	idn_33YtXCmlnUA6NPeBiqAhVaux2fX	\N	\N	f	4158bb4f-8350-4081-99e5-47aed79a9212
 \.
 
@@ -2665,7 +2666,7 @@ COPY "public"."invoices" ("id", "org_id", "invoice_number", "amount", "currency"
 --
 
 COPY "public"."iqm_configurations" ("id", "workspace_id", "api_credentials", "default_settings", "viewability_settings", "status", "last_sync_at", "created_at", "updated_at") FROM stdin;
-c9767b7a-3668-4814-bdcb-9ad1f127abea	2148	{"url": "https://app.iqm.com/api/v3/ua/login", "email": "nitin.gupta@nexgenai.io", "headers": {"Accept": "application/json", "X-Iaa-Host": "app.iqm.com", "Content-Type": "application/json", "Authorization": "Basic cmF3LmdvcDpna0JkSEtDblU2RFdiSjlMTw=="}, "password": "%eZE6GKK>qru8qA>", "grantType": "password"}	{}	{}	active	2025-10-03 14:23:55.643+00	2025-09-05 09:30:20.138221+00	2025-10-03 14:23:55.652+00
+c9767b7a-3668-4814-bdcb-9ad1f127abea	2148	{"url": "https://app.iqm.com/api/v3/ua/login", "email": "nitin.gupta@nexgenai.io", "headers": {"Accept": "application/json", "X-Iaa-Host": "app.iqm.com", "Content-Type": "application/json", "Authorization": "Basic cmF3LmdvcDpna0JkSEtDblU2RFdiSjlMTw=="}, "password": "%eZE6GKK>qru8qA>", "grantType": "password"}	{}	{}	active	2025-10-07 16:35:53.868+00	2025-09-05 09:30:20.138221+00	2025-10-07 16:35:53.88+00
 \.
 
 
@@ -6010,6 +6011,6 @@ SELECT pg_catalog.setval('"supabase_functions"."hooks_id_seq"', 55, true);
 -- PostgreSQL database dump complete
 --
 
--- \unrestrict khsasrVRkdcf6jdQIauztZbzQjtDPNhnGkApXKs1RyiWcDujTQXC37xxrOM5IpI
+-- \unrestrict yiuRsJrNARPZiS4oSrLbTuwzfxFP2TQzIWDAAIxUdqA0DRCuo7XVjngeInNfefA
 
 RESET ALL;
