@@ -95,6 +95,17 @@ CREATE TYPE "public"."access_level" AS ENUM (
 ALTER TYPE "public"."access_level" OWNER TO "postgres";
 
 
+CREATE TYPE "public"."activity_type" AS ENUM (
+    'deployment',
+    'rollback',
+    'notification',
+    'compatibility_check'
+);
+
+
+ALTER TYPE "public"."activity_type" OWNER TO "postgres";
+
+
 CREATE TYPE "public"."agency_customer_status" AS ENUM (
     'active',
     'paused',
@@ -689,6 +700,27 @@ CREATE TYPE "public"."relationship_type" AS ENUM (
 
 
 ALTER TYPE "public"."relationship_type" OWNER TO "postgres";
+
+
+CREATE TYPE "public"."release_status" AS ENUM (
+    'draft',
+    'published',
+    'archived',
+    'rolled_back'
+);
+
+
+ALTER TYPE "public"."release_status" OWNER TO "postgres";
+
+
+CREATE TYPE "public"."release_type" AS ENUM (
+    'frontend',
+    'backend',
+    'both'
+);
+
+
+ALTER TYPE "public"."release_type" OWNER TO "postgres";
 
 
 CREATE TYPE "public"."report_format" AS ENUM (
@@ -2132,6 +2164,55 @@ CREATE TABLE IF NOT EXISTS "public"."refunds" (
 ALTER TABLE "public"."refunds" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."release_activities" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "release_id" "uuid" NOT NULL,
+    "activity_type" "public"."activity_type" NOT NULL,
+    "action" character varying(100) NOT NULL,
+    "status" character varying(50) NOT NULL,
+    "message" "text",
+    "metadata" "jsonb",
+    "performed_by" "uuid",
+    "performed_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."release_activities" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."releases" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "version" character varying(20) NOT NULL,
+    "release_type" "public"."release_type" NOT NULL,
+    "status" "public"."release_status" DEFAULT 'draft'::"public"."release_status" NOT NULL,
+    "bitbucket_commit_id" character varying(40),
+    "jenkins_build_id" character varying(100),
+    "bitbucket_branch" character varying(100),
+    "title" character varying(255) NOT NULL,
+    "description" "text",
+    "purpose" character varying(500),
+    "release_notes" "text",
+    "release_url" character varying(500),
+    "release_tag" character varying(100),
+    "build_url" character varying(500),
+    "is_latest" boolean DEFAULT false NOT NULL,
+    "is_prerelease" boolean DEFAULT false NOT NULL,
+    "download_url" character varying(500),
+    "compatible_versions" "text"[],
+    "breaking_changes" boolean DEFAULT false NOT NULL,
+    "compatibility_notes" "text",
+    "deployed_at" timestamp(6) with time zone,
+    "deployed_by" "uuid",
+    "is_active" boolean DEFAULT false NOT NULL,
+    "last_notified_users" "text"[],
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."releases" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."reports" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "org_id" "uuid" NOT NULL,
@@ -2872,6 +2953,16 @@ ALTER TABLE ONLY "public"."refunds"
 
 
 
+ALTER TABLE ONLY "public"."release_activities"
+    ADD CONSTRAINT "release_activities_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."releases"
+    ADD CONSTRAINT "releases_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."reports"
     ADD CONSTRAINT "reports_pkey" PRIMARY KEY ("id");
 
@@ -3361,6 +3452,42 @@ CREATE UNIQUE INDEX "refunds_stripe_refund_id_key" ON "public"."refunds" USING "
 
 
 
+CREATE INDEX "release_activities_activity_type_idx" ON "public"."release_activities" USING "btree" ("activity_type");
+
+
+
+CREATE INDEX "release_activities_performed_at_idx" ON "public"."release_activities" USING "btree" ("performed_at");
+
+
+
+CREATE INDEX "release_activities_release_id_idx" ON "public"."release_activities" USING "btree" ("release_id");
+
+
+
+CREATE INDEX "release_activities_status_idx" ON "public"."release_activities" USING "btree" ("status");
+
+
+
+CREATE INDEX "releases_deployed_at_idx" ON "public"."releases" USING "btree" ("deployed_at");
+
+
+
+CREATE INDEX "releases_is_active_idx" ON "public"."releases" USING "btree" ("is_active");
+
+
+
+CREATE INDEX "releases_release_type_idx" ON "public"."releases" USING "btree" ("release_type");
+
+
+
+CREATE INDEX "releases_status_idx" ON "public"."releases" USING "btree" ("status");
+
+
+
+CREATE INDEX "releases_version_idx" ON "public"."releases" USING "btree" ("version");
+
+
+
 CREATE UNIQUE INDEX "roles_name_key" ON "public"."roles" USING "btree" ("name");
 
 
@@ -3434,6 +3561,10 @@ CREATE INDEX "unified_logs_third_party_service_status_idx" ON "public"."unified_
 
 
 CREATE INDEX "unified_logs_trace_id_idx" ON "public"."unified_logs" USING "btree" ("trace_id");
+
+
+
+CREATE UNIQUE INDEX "unique_version_per_type" ON "public"."releases" USING "btree" ("version", "release_type");
 
 
 
@@ -4163,6 +4294,11 @@ ALTER TABLE ONLY "public"."refunds"
 
 ALTER TABLE ONLY "public"."refunds"
     ADD CONSTRAINT "refunds_platform_specific_campaign_id_fkey" FOREIGN KEY ("platform_specific_campaign_id") REFERENCES "public"."platform_specific_campaigns"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."release_activities"
+    ADD CONSTRAINT "release_activities_release_id_fkey" FOREIGN KEY ("release_id") REFERENCES "public"."releases"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
