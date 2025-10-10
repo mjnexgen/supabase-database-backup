@@ -2206,7 +2206,11 @@ CREATE TABLE IF NOT EXISTS "public"."releases" (
     "is_active" boolean DEFAULT false NOT NULL,
     "last_notified_users" "text"[],
     "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "completed_features" "text"[],
+    "planned_features" "text"[],
+    "roadmap_items" "jsonb",
+    "upcoming_features" "text"[]
 );
 
 
