@@ -1213,7 +1213,8 @@ CREATE TABLE IF NOT EXISTS "public"."campaigns" (
     "current_balance" numeric(15,2) DEFAULT 0 NOT NULL,
     "total_commision" numeric(15,2),
     "platform_daily_budgets" "jsonb",
-    "platform_max_bids" "jsonb"
+    "platform_max_bids" "jsonb",
+    "canonical_id" "text"
 );
 
 
@@ -1475,7 +1476,8 @@ CREATE TABLE IF NOT EXISTS "public"."insertion_orders" (
     "iqm_distribution_method_id" integer,
     "platform_references" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
     "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "canonical_id" "text"
 );
 
 
