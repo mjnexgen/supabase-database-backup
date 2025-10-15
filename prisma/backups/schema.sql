@@ -393,7 +393,10 @@ CREATE TYPE "public"."email_template_type" AS ENUM (
     'payment_success',
     'payment_failure',
     'refund_success',
-    'refund_failure'
+    'refund_failure',
+    'password_changed',
+    'user_credential',
+    'join_confirmation'
 );
 
 
