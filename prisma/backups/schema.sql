@@ -2435,6 +2435,19 @@ CREATE TABLE IF NOT EXISTS "public"."user_preferences" (
 ALTER TABLE "public"."user_preferences" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."user_release_acknowledgments" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "release_id" "uuid" NOT NULL,
+    "acknowledged_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."user_release_acknowledgments" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."users" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "clerk_user_id" "text" NOT NULL,
@@ -3027,6 +3040,11 @@ ALTER TABLE ONLY "public"."user_preferences"
 
 
 
+ALTER TABLE ONLY "public"."user_release_acknowledgments"
+    ADD CONSTRAINT "user_release_acknowledgments_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."users"
     ADD CONSTRAINT "users_pkey" PRIMARY KEY ("id");
 
@@ -3573,6 +3591,10 @@ CREATE INDEX "unified_logs_trace_id_idx" ON "public"."unified_logs" USING "btree
 
 
 
+CREATE UNIQUE INDEX "unique_user_release_acknowledgment" ON "public"."user_release_acknowledgments" USING "btree" ("user_id", "release_id");
+
+
+
 CREATE UNIQUE INDEX "unique_version_per_type" ON "public"."releases" USING "btree" ("version", "release_type");
 
 
@@ -3582,6 +3604,18 @@ CREATE UNIQUE INDEX "user_email_preferences_unsubscribe_token_key" ON "public"."
 
 
 CREATE UNIQUE INDEX "user_email_preferences_user_id_org_id_key" ON "public"."user_email_preferences" USING "btree" ("user_id", "org_id");
+
+
+
+CREATE INDEX "user_release_acknowledgments_acknowledged_at_idx" ON "public"."user_release_acknowledgments" USING "btree" ("acknowledged_at");
+
+
+
+CREATE INDEX "user_release_acknowledgments_release_id_idx" ON "public"."user_release_acknowledgments" USING "btree" ("release_id");
+
+
+
+CREATE INDEX "user_release_acknowledgments_user_id_idx" ON "public"."user_release_acknowledgments" USING "btree" ("user_id");
 
 
 
@@ -4373,6 +4407,11 @@ ALTER TABLE ONLY "public"."user_email_preferences"
 
 ALTER TABLE ONLY "public"."user_preferences"
     ADD CONSTRAINT "user_preferences_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."user_release_acknowledgments"
+    ADD CONSTRAINT "user_release_acknowledgments_release_id_fkey" FOREIGN KEY ("release_id") REFERENCES "public"."releases"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
