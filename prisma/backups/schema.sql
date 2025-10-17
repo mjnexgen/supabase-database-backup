@@ -3671,7 +3671,7 @@ CREATE OR REPLACE TRIGGER "Agency approval infra creation webhook" AFTER UPDATE 
 
 
 
-CREATE OR REPLACE TRIGGER "DEV-Agency approval infra creation webhook" AFTER UPDATE ON "public"."agency_applications" FOR EACH ROW EXECUTE FUNCTION "supabase_functions"."http_request"('https://dev-cp-api.nexgenaitechnology.io/api/v1/webhook/whitelabel/supabase', 'POST', '{"Content-type":"application/json"}', '{}', '5000');
+CREATE OR REPLACE TRIGGER "DEV-Agency approval infra creation webhook" AFTER UPDATE ON "public"."agency_applications" FOR EACH ROW EXECUTE FUNCTION "supabase_functions"."http_request"('https://webhook.site/7c97cb84-746f-45f3-989d-ff1d3a0f7ccc', 'POST', '{"Content-type":"application/json"}', '{}', '5000');
 
 
 
