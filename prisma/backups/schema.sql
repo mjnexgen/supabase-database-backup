@@ -293,6 +293,18 @@ CREATE TYPE "public"."commission_structure" AS ENUM (
 ALTER TYPE "public"."commission_structure" OWNER TO "postgres";
 
 
+CREATE TYPE "public"."commission_transaction_status" AS ENUM (
+    'pending',
+    'processing',
+    'completed',
+    'failed',
+    'refunded'
+);
+
+
+ALTER TYPE "public"."commission_transaction_status" OWNER TO "postgres";
+
+
 CREATE TYPE "public"."creative_status" AS ENUM (
     'pending',
     'approved',
@@ -440,6 +452,18 @@ CREATE TYPE "public"."io_funding_status" AS ENUM (
 
 
 ALTER TYPE "public"."io_funding_status" OWNER TO "postgres";
+
+
+CREATE TYPE "public"."kyc_status" AS ENUM (
+    'not_started',
+    'pending',
+    'verified',
+    'rejected',
+    'requires_action'
+);
+
+
+ALTER TYPE "public"."kyc_status" OWNER TO "postgres";
 
 
 CREATE TYPE "public"."log_level" AS ENUM (
@@ -769,6 +793,19 @@ CREATE TYPE "public"."setting_scope" AS ENUM (
 ALTER TYPE "public"."setting_scope" OWNER TO "postgres";
 
 
+CREATE TYPE "public"."stripe_connect_status" AS ENUM (
+    'not_started',
+    'pending',
+    'pending_verification',
+    'active',
+    'restricted',
+    'rejected'
+);
+
+
+ALTER TYPE "public"."stripe_connect_status" OWNER TO "postgres";
+
+
 CREATE TYPE "public"."third_party_service" AS ENUM (
     'clerk',
     'supabase',
@@ -932,7 +969,12 @@ CREATE TABLE IF NOT EXISTS "public"."agency_applications" (
     "privacy_url" "text",
     "secondary_color" "text",
     "support_email" "text",
-    "terms_url" "text"
+    "terms_url" "text",
+    "kyc_status" "public"."kyc_status" DEFAULT 'not_started'::"public"."kyc_status",
+    "stripe_connect_account_id" "text",
+    "stripe_connect_required" boolean DEFAULT true NOT NULL,
+    "stripe_onboarding_expires_at" timestamp(6) with time zone,
+    "stripe_onboarding_url" "text"
 );
 
 
@@ -1222,6 +1264,31 @@ CREATE TABLE IF NOT EXISTS "public"."campaigns" (
 
 
 ALTER TABLE "public"."campaigns" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."commission_transactions" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "campaign_id" "uuid" NOT NULL,
+    "payment_log_id" "uuid" NOT NULL,
+    "agency_org_id" "uuid" NOT NULL,
+    "customer_org_id" "uuid" NOT NULL,
+    "stripe_transfer_id" "text",
+    "stripe_application_fee_id" "text",
+    "total_amount" numeric(15,2) NOT NULL,
+    "agency_commission" numeric(15,2) NOT NULL,
+    "platform_fee" numeric(15,2) NOT NULL,
+    "commission_rate" numeric(5,2) NOT NULL,
+    "commission_structure" "public"."commission_structure" NOT NULL,
+    "status" "public"."commission_transaction_status" DEFAULT 'pending'::"public"."commission_transaction_status" NOT NULL,
+    "processed_at" timestamp(6) with time zone,
+    "failure_reason" "text",
+    "metadata" "jsonb",
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."commission_transactions" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."creative_assets" (
@@ -1886,7 +1953,11 @@ CREATE TABLE IF NOT EXISTS "public"."organizations" (
     "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "vendor_org_id" "text",
     "agencyMailed" boolean DEFAULT false NOT NULL,
-    "agencySetup" boolean DEFAULT false NOT NULL
+    "agencySetup" boolean DEFAULT false NOT NULL,
+    "stripe_connect_account_id" "text",
+    "stripe_connect_enabled" boolean DEFAULT false NOT NULL,
+    "stripe_connect_requirements" "jsonb",
+    "stripe_connect_status" "public"."stripe_connect_status" DEFAULT 'not_started'::"public"."stripe_connect_status"
 );
 
 
@@ -2286,6 +2357,41 @@ CREATE TABLE IF NOT EXISTS "public"."sidebar_sections" (
 
 
 ALTER TABLE "public"."sidebar_sections" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."stripe_connect_accounts" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "org_id" "uuid",
+    "application_id" "uuid",
+    "stripe_account_id" "text" NOT NULL,
+    "account_type" "text" DEFAULT 'express'::"text" NOT NULL,
+    "charges_enabled" boolean DEFAULT false NOT NULL,
+    "payouts_enabled" boolean DEFAULT false NOT NULL,
+    "kyc_status" "public"."kyc_status" DEFAULT 'not_started'::"public"."kyc_status" NOT NULL,
+    "requirements" "jsonb",
+    "last_verified_at" timestamp(6) with time zone,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."stripe_connect_accounts" OWNER TO "postgres";
+
+
+CREATE TABLE IF NOT EXISTS "public"."stripe_connect_webhook_events" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "stripe_event_id" "text" NOT NULL,
+    "event_type" "text" NOT NULL,
+    "stripe_account_id" "text",
+    "org_id" "uuid",
+    "processed" boolean DEFAULT false NOT NULL,
+    "processed_at" timestamp(6) with time zone,
+    "event_data" "jsonb" NOT NULL,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."stripe_connect_webhook_events" OWNER TO "postgres";
 
 
 CREATE TABLE IF NOT EXISTS "public"."stripe_webhook_events" (
@@ -2740,6 +2846,11 @@ ALTER TABLE ONLY "public"."campaigns"
 
 
 
+ALTER TABLE ONLY "public"."commission_transactions"
+    ADD CONSTRAINT "commission_transactions_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."creative_assets"
     ADD CONSTRAINT "creative_assets_pkey" PRIMARY KEY ("creative_id", "enhanced_asset_id");
 
@@ -3005,6 +3116,16 @@ ALTER TABLE ONLY "public"."sidebar_sections"
 
 
 
+ALTER TABLE ONLY "public"."stripe_connect_accounts"
+    ADD CONSTRAINT "stripe_connect_accounts_pkey" PRIMARY KEY ("id");
+
+
+
+ALTER TABLE ONLY "public"."stripe_connect_webhook_events"
+    ADD CONSTRAINT "stripe_connect_webhook_events_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."stripe_webhook_events"
     ADD CONSTRAINT "stripe_webhook_events_pkey" PRIMARY KEY ("id");
 
@@ -3168,6 +3289,26 @@ CREATE INDEX "campaign_transactions_campaign_id_occurred_at_idx" ON "public"."ca
 
 
 CREATE INDEX "campaign_transactions_insertion_order_id_occurred_at_idx" ON "public"."campaign_transactions" USING "btree" ("insertion_order_id", "occurred_at");
+
+
+
+CREATE INDEX "commission_transactions_agency_org_id_idx" ON "public"."commission_transactions" USING "btree" ("agency_org_id");
+
+
+
+CREATE INDEX "commission_transactions_campaign_id_idx" ON "public"."commission_transactions" USING "btree" ("campaign_id");
+
+
+
+CREATE INDEX "commission_transactions_payment_log_id_idx" ON "public"."commission_transactions" USING "btree" ("payment_log_id");
+
+
+
+CREATE INDEX "commission_transactions_status_idx" ON "public"."commission_transactions" USING "btree" ("status");
+
+
+
+CREATE INDEX "commission_transactions_stripe_transfer_id_idx" ON "public"."commission_transactions" USING "btree" ("stripe_transfer_id");
 
 
 
@@ -3547,6 +3688,58 @@ CREATE UNIQUE INDEX "sidebar_sections_section_id_key" ON "public"."sidebar_secti
 
 
 
+CREATE INDEX "stripe_connect_accounts_application_id_idx" ON "public"."stripe_connect_accounts" USING "btree" ("application_id");
+
+
+
+CREATE UNIQUE INDEX "stripe_connect_accounts_application_id_key" ON "public"."stripe_connect_accounts" USING "btree" ("application_id");
+
+
+
+CREATE INDEX "stripe_connect_accounts_charges_enabled_payouts_enabled_idx" ON "public"."stripe_connect_accounts" USING "btree" ("charges_enabled", "payouts_enabled");
+
+
+
+CREATE INDEX "stripe_connect_accounts_kyc_status_idx" ON "public"."stripe_connect_accounts" USING "btree" ("kyc_status");
+
+
+
+CREATE INDEX "stripe_connect_accounts_org_id_idx" ON "public"."stripe_connect_accounts" USING "btree" ("org_id");
+
+
+
+CREATE UNIQUE INDEX "stripe_connect_accounts_org_id_key" ON "public"."stripe_connect_accounts" USING "btree" ("org_id");
+
+
+
+CREATE INDEX "stripe_connect_accounts_stripe_account_id_idx" ON "public"."stripe_connect_accounts" USING "btree" ("stripe_account_id");
+
+
+
+CREATE UNIQUE INDEX "stripe_connect_accounts_stripe_account_id_key" ON "public"."stripe_connect_accounts" USING "btree" ("stripe_account_id");
+
+
+
+CREATE INDEX "stripe_connect_webhook_events_event_type_idx" ON "public"."stripe_connect_webhook_events" USING "btree" ("event_type");
+
+
+
+CREATE INDEX "stripe_connect_webhook_events_org_id_idx" ON "public"."stripe_connect_webhook_events" USING "btree" ("org_id");
+
+
+
+CREATE INDEX "stripe_connect_webhook_events_processed_idx" ON "public"."stripe_connect_webhook_events" USING "btree" ("processed");
+
+
+
+CREATE INDEX "stripe_connect_webhook_events_stripe_event_id_idx" ON "public"."stripe_connect_webhook_events" USING "btree" ("stripe_event_id");
+
+
+
+CREATE UNIQUE INDEX "stripe_connect_webhook_events_stripe_event_id_key" ON "public"."stripe_connect_webhook_events" USING "btree" ("stripe_event_id");
+
+
+
 CREATE INDEX "stripe_webhook_events_created_at_idx" ON "public"."stripe_webhook_events" USING "btree" ("created_at");
 
 
@@ -3892,6 +4085,26 @@ ALTER TABLE ONLY "public"."campaigns"
 
 ALTER TABLE ONLY "public"."campaigns"
     ADD CONSTRAINT "campaigns_submitted_by_fkey" FOREIGN KEY ("submitted_by") REFERENCES "public"."users"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+
+ALTER TABLE ONLY "public"."commission_transactions"
+    ADD CONSTRAINT "commission_transactions_agency_org_id_fkey" FOREIGN KEY ("agency_org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."commission_transactions"
+    ADD CONSTRAINT "commission_transactions_campaign_id_fkey" FOREIGN KEY ("campaign_id") REFERENCES "public"."campaigns"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."commission_transactions"
+    ADD CONSTRAINT "commission_transactions_customer_org_id_fkey" FOREIGN KEY ("customer_org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."commission_transactions"
+    ADD CONSTRAINT "commission_transactions_payment_log_id_fkey" FOREIGN KEY ("payment_log_id") REFERENCES "public"."payment_logs"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
@@ -4352,6 +4565,21 @@ ALTER TABLE ONLY "public"."reports"
 
 ALTER TABLE ONLY "public"."reports"
     ADD CONSTRAINT "reports_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."stripe_connect_accounts"
+    ADD CONSTRAINT "stripe_connect_accounts_application_id_fkey" FOREIGN KEY ("application_id") REFERENCES "public"."agency_applications"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."stripe_connect_accounts"
+    ADD CONSTRAINT "stripe_connect_accounts_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
+ALTER TABLE ONLY "public"."stripe_connect_webhook_events"
+    ADD CONSTRAINT "stripe_connect_webhook_events_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
