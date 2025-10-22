@@ -969,12 +969,7 @@ CREATE TABLE IF NOT EXISTS "public"."agency_applications" (
     "privacy_url" "text",
     "secondary_color" "text",
     "support_email" "text",
-    "terms_url" "text",
-    "kyc_status" "public"."kyc_status" DEFAULT 'not_started'::"public"."kyc_status",
-    "stripe_connect_account_id" "text",
-    "stripe_connect_required" boolean DEFAULT true NOT NULL,
-    "stripe_onboarding_expires_at" timestamp(6) with time zone,
-    "stripe_onboarding_url" "text"
+    "terms_url" "text"
 );
 
 
@@ -1953,11 +1948,7 @@ CREATE TABLE IF NOT EXISTS "public"."organizations" (
     "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "vendor_org_id" "text",
     "agencyMailed" boolean DEFAULT false NOT NULL,
-    "agencySetup" boolean DEFAULT false NOT NULL,
-    "stripe_connect_account_id" "text",
-    "stripe_connect_enabled" boolean DEFAULT false NOT NULL,
-    "stripe_connect_requirements" "jsonb",
-    "stripe_connect_status" "public"."stripe_connect_status" DEFAULT 'not_started'::"public"."stripe_connect_status"
+    "agencySetup" boolean DEFAULT false NOT NULL
 );
 
 
@@ -2361,8 +2352,7 @@ ALTER TABLE "public"."sidebar_sections" OWNER TO "postgres";
 
 CREATE TABLE IF NOT EXISTS "public"."stripe_connect_accounts" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
-    "org_id" "uuid",
-    "application_id" "uuid",
+    "org_id" "uuid" NOT NULL,
     "stripe_account_id" "text" NOT NULL,
     "account_type" "text" DEFAULT 'express'::"text" NOT NULL,
     "charges_enabled" boolean DEFAULT false NOT NULL,
@@ -3688,14 +3678,6 @@ CREATE UNIQUE INDEX "sidebar_sections_section_id_key" ON "public"."sidebar_secti
 
 
 
-CREATE INDEX "stripe_connect_accounts_application_id_idx" ON "public"."stripe_connect_accounts" USING "btree" ("application_id");
-
-
-
-CREATE UNIQUE INDEX "stripe_connect_accounts_application_id_key" ON "public"."stripe_connect_accounts" USING "btree" ("application_id");
-
-
-
 CREATE INDEX "stripe_connect_accounts_charges_enabled_payouts_enabled_idx" ON "public"."stripe_connect_accounts" USING "btree" ("charges_enabled", "payouts_enabled");
 
 
@@ -4565,11 +4547,6 @@ ALTER TABLE ONLY "public"."reports"
 
 ALTER TABLE ONLY "public"."reports"
     ADD CONSTRAINT "reports_org_id_fkey" FOREIGN KEY ("org_id") REFERENCES "public"."organizations"("id") ON UPDATE CASCADE ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY "public"."stripe_connect_accounts"
-    ADD CONSTRAINT "stripe_connect_accounts_application_id_fkey" FOREIGN KEY ("application_id") REFERENCES "public"."agency_applications"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 
