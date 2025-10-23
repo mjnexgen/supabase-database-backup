@@ -4,7 +4,7 @@ SET session_replication_role = replica;
 -- PostgreSQL database dump
 --
 
--- \restrict 4farefbbTzMaSklgqH6J6ORwPyzj4hQZI5wYnh1JhKpOZ05MpsZZBLeSPPh9Wav
+-- \restrict qs4pSpIleUnICQ9dLUPxr1RJhEY2CPiJbblaF0nzs94Q0SidLpuEeUHxhBWnMLo
 
 -- Dumped from database version 17.4
 -- Dumped by pg_dump version 17.6
@@ -3776,7 +3776,7 @@ COPY "public"."invoices" ("id", "org_id", "invoice_number", "amount", "currency"
 --
 
 COPY "public"."iqm_configurations" ("id", "workspace_id", "api_credentials", "default_settings", "viewability_settings", "status", "last_sync_at", "created_at", "updated_at") FROM stdin;
-c9767b7a-3668-4814-bdcb-9ad1f127abea	2148	{"url": "https://app.iqm.com/api/v3/ua/login", "email": "nitin.gupta@nexgenai.io", "headers": {"Accept": "application/json", "X-Iaa-Host": "app.iqm.com", "Content-Type": "application/json", "Authorization": "Basic cmF3LmdvcDpna0JkSEtDblU2RFdiSjlMTw=="}, "password": "%eZE6GKK>qru8qA>", "grantType": "password"}	{}	{}	active	2025-10-22 10:49:38.835+00	2025-09-05 09:30:20.138221+00	2025-10-22 10:49:38.838+00
+c9767b7a-3668-4814-bdcb-9ad1f127abea	2148	{"url": "https://app.iqm.com/api/v3/ua/login", "email": "nitin.gupta@nexgenai.io", "headers": {"Accept": "application/json", "X-Iaa-Host": "app.iqm.com", "Content-Type": "application/json", "Authorization": "Basic cmF3LmdvcDpna0JkSEtDblU2RFdiSjlMTw=="}, "password": "%eZE6GKK>qru8qA>", "grantType": "password"}	{}	{}	active	2025-10-23 17:48:17.98+00	2025-09-05 09:30:20.138221+00	2025-10-23 17:48:17.982+00
 \.
 
 
@@ -4666,6 +4666,7 @@ f232f343-6a9d-43cc-ae83-f79dfc1c8471	614fe0ca-fa54-4c2f-a596-1ddc229b6010	t	2025
 8b0d28ac-b8ca-45c8-aa57-908406a833bb	8512f413-7de6-4e77-aa1a-edfdf23c024e	t	2025-10-21 16:28:40.648+00	{"adPlatforms": ["ott"], "campaignTypes": ["display"]}	2025-10-21 16:28:40.649+00	2025-10-21 16:28:40.649+00	platform_preferences	1345350d-7985-4577-8732-2152b81a55ab
 9faaf40c-3847-46b0-9da6-a098c4782c56	cf46cf17-6b59-4c8a-832f-d7ffc23a4a2a	t	2025-10-21 17:38:57.923+00	{"role": "campaign_manager", "industryFocus": "political_campaign"}	2025-10-21 17:38:57.924+00	2025-10-21 17:38:57.924+00	personal_info	ccecc400-fd95-4b87-809c-23478b94d456
 e6f033ba-150b-4c20-9ef0-29be2097d6b0	cf46cf17-6b59-4c8a-832f-d7ffc23a4a2a	t	2025-10-21 17:39:12.537+00	{"targetLocations": ["ca"], "campaignObjective": "awareness"}	2025-10-21 17:39:12.539+00	2025-10-21 17:39:12.539+00	campaign_preferences	ccecc400-fd95-4b87-809c-23478b94d456
+cffcf933-c4c1-47f2-9e61-335140112eae	cf46cf17-6b59-4c8a-832f-d7ffc23a4a2a	t	2025-10-23 15:32:29.512+00	{"adPlatforms": ["ott"], "campaignTypes": ["video"]}	2025-10-23 15:32:29.514+00	2025-10-23 15:32:29.514+00	platform_preferences	ccecc400-fd95-4b87-809c-23478b94d456
 \.
 
 
@@ -7737,6 +7738,7 @@ f6ea291a-ceff-41e7-980c-2dd8a3cd8bae	73607a25-93cb-4f64-9546-e2a0619f666b	notifi
 43124dfa-8e32-411d-8f29-e9b9df844ea8	73607a25-93cb-4f64-9546-e2a0619f666b	notification	acknowledge	success	User user_34Bh5HYqwg3pb6GnEyqlTQ4D6Pt acknowledged release 2.8.1	{"userId": "user_34Bh5HYqwg3pb6GnEyqlTQ4D6Pt", "version": "2.8.1", "internalUserId": "87584eb8-0e0c-4f9a-98ed-0dbed33d7dd7"}	87584eb8-0e0c-4f9a-98ed-0dbed33d7dd7	2025-10-17 10:27:43.857+00
 bdc135c0-dec8-4ce2-bb99-ab17eb8f0cb8	73607a25-93cb-4f64-9546-e2a0619f666b	notification	acknowledge	success	User user_33GwNOTuC8cAsCWpI4NLhM3GVyD acknowledged release 2.8.1	{"userId": "user_33GwNOTuC8cAsCWpI4NLhM3GVyD", "version": "2.8.1", "internalUserId": "17817952-bf0a-4b52-b8e4-caaa1e2d6087"}	17817952-bf0a-4b52-b8e4-caaa1e2d6087	2025-10-21 09:22:09.774+00
 6ed3de24-a2a9-4f22-be79-57f68e808840	73607a25-93cb-4f64-9546-e2a0619f666b	notification	acknowledge	success	User user_33TV2pFRUTKaEpBNTGnlmXSBA6E acknowledged release 2.8.1	{"userId": "user_33TV2pFRUTKaEpBNTGnlmXSBA6E", "version": "2.8.1", "internalUserId": "304ab0b4-d291-4bcd-9485-d8b1b41120c8"}	304ab0b4-d291-4bcd-9485-d8b1b41120c8	2025-10-21 15:31:33.825+00
+bc860c23-20cc-439c-b6a2-9f5006b38893	73607a25-93cb-4f64-9546-e2a0619f666b	notification	acknowledge	success	User user_33TV2pFRUTKaEpBNTGnlmXSBA6E acknowledged release 2.8.1	{"userId": "user_33TV2pFRUTKaEpBNTGnlmXSBA6E", "version": "2.8.1", "internalUserId": "304ab0b4-d291-4bcd-9485-d8b1b41120c8"}	304ab0b4-d291-4bcd-9485-d8b1b41120c8	2025-10-23 15:31:17.701+00
 \.
 
 
@@ -7787,6 +7789,7 @@ bbed85a9-93de-467b-8ef0-2be27cf4293f	4	Reports	solar:document-text-line-duotone	
 --
 
 COPY "public"."stripe_connect_accounts" ("id", "org_id", "stripe_account_id", "account_type", "charges_enabled", "payouts_enabled", "kyc_status", "requirements", "last_verified_at", "created_at", "updated_at") FROM stdin;
+c7173943-efb3-4d63-936d-425258d93542	1d2454ec-d6ff-427d-979f-459aec368a4d	acct_1SLRuuLZT0DAzAaH	express	f	f	not_started	\N	\N	2025-10-23 17:03:17.622+00	2025-10-23 17:03:17.622+00
 \.
 
 
@@ -7963,9 +7966,9 @@ c441f5b6-b841-4fcd-acd4-6ab333b675f2	light	{"sms": false, "push": true, "email":
 1345350d-7985-4577-8732-2152b81a55ab	light	{"sms": false, "push": true, "email": true}	{}	US/Eastern	USD	2025-10-21 16:21:18.701+00	2025-10-21 16:28:41.847+00	[{"orgId": "8512f413-7de6-4e77-aa1a-edfdf23c024e", "steps": [{"stepData": {"role": "campaign_manager", "industryFocus": "political_campaign"}, "stepType": "personal_info", "stepOrder": 1, "completedAt": "2025-10-21T16:28:10.809Z"}, {"stepData": {"targetLocations": ["ca"], "campaignObjective": "awareness"}, "stepType": "campaign_preferences", "stepOrder": 2, "completedAt": "2025-10-21T16:28:24.574Z"}, {"stepData": {"adPlatforms": ["ott"], "campaignTypes": ["display"]}, "stepType": "platform_preferences", "stepOrder": 3, "completedAt": "2025-10-21T16:28:41.846Z"}], "userType": "agency", "totalSteps": 3, "completedAt": "2025-10-21T16:28:41.846Z"}]
 cfcd2b80-8242-46f1-ab96-9be7ce68b27e	light	{"sms": false, "push": true, "email": true}	{}	US/Eastern	USD	2025-10-13 08:57:39.515+00	2025-10-13 09:28:44.341+00	[{"orgId": "869e197f-8fcf-4101-9718-5aee8740b0c1", "steps": [{"stepData": {"role": "campaign_manager", "industryFocus": "government_agency"}, "stepType": "personal_info", "stepOrder": 1, "completedAt": "2025-10-13T09:28:14.654Z"}, {"stepData": {"targetLocations": ["ca", "ny"], "campaignObjective": "awareness"}, "stepType": "campaign_preferences", "stepOrder": 2, "completedAt": "2025-10-13T09:28:31.944Z"}, {"stepData": {"adPlatforms": ["ott"], "campaignTypes": ["video", "display"]}, "stepType": "platform_preferences", "stepOrder": 3, "completedAt": "2025-10-13T09:28:44.340Z"}], "userType": "agency", "totalSteps": 3, "completedAt": "2025-10-13T09:28:44.340Z"}]
 eb7cfc4e-6554-4a0d-92bc-9ffba28b83c0	light	{"sms": false, "push": true, "email": true}	{}	US/Eastern	USD	2025-10-13 12:17:45.151+00	2025-10-13 12:17:45.151+00	[]
+ccecc400-fd95-4b87-809c-23478b94d456	light	{"sms": false, "push": true, "email": true}	{}	US/Eastern	USD	2025-10-21 17:38:33.277+00	2025-10-23 15:32:31.722+00	[{"orgId": "cf46cf17-6b59-4c8a-832f-d7ffc23a4a2a", "steps": [{"stepData": {"role": "campaign_manager", "industryFocus": "political_campaign"}, "stepType": "personal_info", "stepOrder": 1, "completedAt": "2025-10-21T17:39:00.451Z"}, {"stepData": {"targetLocations": ["ca"], "campaignObjective": "awareness"}, "stepType": "campaign_preferences", "stepOrder": 2, "completedAt": "2025-10-21T17:39:13.802Z"}, {"stepData": {"adPlatforms": ["ott"], "campaignTypes": ["video"]}, "stepType": "platform_preferences", "stepOrder": 3, "completedAt": "2025-10-23T15:32:31.715Z"}], "userType": "agency", "totalSteps": 3, "completedAt": "2025-10-23T15:32:31.716Z"}]
 d70ef6f4-d73b-43d8-b540-62befd292712	light	{"sms": false, "push": true, "email": true}	{}	US/Eastern	USD	2025-10-16 16:27:36.916+00	2025-10-16 16:36:03.439+00	[{"orgId": "e604966c-fc36-4412-b586-2fb6317e5d30", "steps": [{"stepData": {"role": "campaign_manager", "industryFocus": "political_campaign"}, "stepType": "personal_info", "stepOrder": 1, "completedAt": "2025-10-16T16:35:45.468Z"}, {"stepData": {"targetLocations": ["ny"], "campaignObjective": "awareness"}, "stepType": "campaign_preferences", "stepOrder": 2, "completedAt": "2025-10-16T16:35:54.305Z"}, {"stepData": {"adPlatforms": ["instagram"], "campaignTypes": ["display"]}, "stepType": "platform_preferences", "stepOrder": 3, "completedAt": "2025-10-16T16:36:03.436Z"}], "userType": "agency", "totalSteps": 3, "completedAt": "2025-10-16T16:36:03.437Z"}]
 dc7b7ebb-bffc-4881-8679-65977d44bd37	light	{"sms": false, "push": true, "email": true}	{}	US/Eastern	USD	2025-10-14 09:29:28.362+00	2025-10-14 09:31:09.226+00	[{"orgId": "1216b7a4-6211-4123-b9de-28e87d078fd3", "steps": [{"stepData": {"role": "campaign_manager", "industryFocus": "political_campaign"}, "stepType": "personal_info", "stepOrder": 1, "completedAt": "2025-10-14T09:30:50.367Z"}, {"stepData": {"targetLocations": ["ca"], "campaignObjective": "awareness"}, "stepType": "campaign_preferences", "stepOrder": 2, "completedAt": "2025-10-14T09:31:02.709Z"}, {"stepData": {"adPlatforms": ["ott"], "campaignTypes": ["video"]}, "stepType": "platform_preferences", "stepOrder": 3, "completedAt": "2025-10-14T09:31:09.224Z"}], "userType": "agency", "totalSteps": 3, "completedAt": "2025-10-14T09:31:09.225Z"}]
-ccecc400-fd95-4b87-809c-23478b94d456	light	{"sms": false, "push": true, "email": true}	{}	US/Eastern	USD	2025-10-21 17:38:33.277+00	2025-10-21 17:39:13.802+00	[{"orgId": "cf46cf17-6b59-4c8a-832f-d7ffc23a4a2a", "steps": [{"stepData": {"role": "campaign_manager", "industryFocus": "political_campaign"}, "stepType": "personal_info", "stepOrder": 1, "completedAt": "2025-10-21T17:39:00.451Z"}, {"stepData": {"targetLocations": ["ca"], "campaignObjective": "awareness"}, "stepType": "campaign_preferences", "stepOrder": 2, "completedAt": "2025-10-21T17:39:13.802Z"}], "userType": "agency", "totalSteps": 2, "completedAt": "2025-10-21T17:39:13.802Z"}]
 e0ec7f36-d5be-436c-9dfc-7774a451c3bb	light	{"sms": false, "push": true, "email": true}	\N	UTC	USD	2025-10-13 16:20:45.319+00	2025-10-13 16:20:45.319+00	[]
 c3d768f1-6ae0-4dad-b66f-4281e3799bcf	light	{"sms": false, "push": true, "email": true}	\N	UTC	USD	2025-10-13 16:20:47.157+00	2025-10-13 16:20:47.157+00	[]
 154d3c73-f556-4657-bc3f-97d88df3d2e3	light	{"sms": false, "push": true, "email": true}	\N	UTC	USD	2025-10-13 16:20:48.754+00	2025-10-13 16:20:48.754+00	[]
@@ -7993,7 +7996,7 @@ d901e562-16e5-4f41-8519-72a130612bff	a1a9e1a4-ee23-42f6-9338-369d1dd705e0	73607a
 7a3b199a-c205-499e-bc75-4fcfd5dde3ff	027d2a2b-b64b-4669-87f7-08803c39f046	73607a25-93cb-4f64-9546-e2a0619f666b	2025-10-17 10:16:30.188+00	2025-10-17 09:40:43.868+00	2025-10-17 10:16:30.189+00
 ae954490-8097-41ae-beb0-15cdbc350810	87584eb8-0e0c-4f9a-98ed-0dbed33d7dd7	73607a25-93cb-4f64-9546-e2a0619f666b	2025-10-17 10:27:41.076+00	2025-10-17 10:27:41.077+00	2025-10-17 10:27:41.077+00
 3a5bf35a-c3e6-4a07-9858-326b82d61718	17817952-bf0a-4b52-b8e4-caaa1e2d6087	73607a25-93cb-4f64-9546-e2a0619f666b	2025-10-21 09:22:07.146+00	2025-10-21 09:22:07.147+00	2025-10-21 09:22:07.147+00
-20f885bc-385d-48ca-a235-bd264c2a7571	304ab0b4-d291-4bcd-9485-d8b1b41120c8	73607a25-93cb-4f64-9546-e2a0619f666b	2025-10-21 15:31:31.175+00	2025-10-21 15:31:31.176+00	2025-10-21 15:31:31.176+00
+20f885bc-385d-48ca-a235-bd264c2a7571	304ab0b4-d291-4bcd-9485-d8b1b41120c8	73607a25-93cb-4f64-9546-e2a0619f666b	2025-10-23 15:31:15.027+00	2025-10-21 15:31:31.176+00	2025-10-23 15:31:15.028+00
 \.
 
 
@@ -8502,6 +8505,6 @@ SELECT pg_catalog.setval('"supabase_functions"."hooks_id_seq"', 103, true);
 -- PostgreSQL database dump complete
 --
 
--- \unrestrict 4farefbbTzMaSklgqH6J6ORwPyzj4hQZI5wYnh1JhKpOZ05MpsZZBLeSPPh9Wav
+-- \unrestrict qs4pSpIleUnICQ9dLUPxr1RJhEY2CPiJbblaF0nzs94Q0SidLpuEeUHxhBWnMLo
 
 RESET ALL;
