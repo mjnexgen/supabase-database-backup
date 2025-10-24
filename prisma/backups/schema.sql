@@ -408,7 +408,8 @@ CREATE TYPE "public"."email_template_type" AS ENUM (
     'refund_failure',
     'password_changed',
     'user_credential',
-    'join_confirmation'
+    'join_confirmation',
+    'user_signup'
 );
 
 
@@ -1955,6 +1956,23 @@ CREATE TABLE IF NOT EXISTS "public"."organizations" (
 ALTER TABLE "public"."organizations" OWNER TO "postgres";
 
 
+CREATE TABLE IF NOT EXISTS "public"."otp_verifications" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "email" "text" NOT NULL,
+    "otp" "text" NOT NULL,
+    "purpose" "text" NOT NULL,
+    "attempts" integer DEFAULT 0 NOT NULL,
+    "verified" boolean DEFAULT false NOT NULL,
+    "user_data" "jsonb",
+    "expires_at" timestamp(6) with time zone NOT NULL,
+    "created_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(6) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE "public"."otp_verifications" OWNER TO "postgres";
+
+
 CREATE TABLE IF NOT EXISTS "public"."payment_allocations" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "payment_log_id" "uuid" NOT NULL,
@@ -3011,6 +3029,11 @@ ALTER TABLE ONLY "public"."organizations"
 
 
 
+ALTER TABLE ONLY "public"."otp_verifications"
+    ADD CONSTRAINT "otp_verifications_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."payment_allocations"
     ADD CONSTRAINT "payment_allocations_pkey" PRIMARY KEY ("id");
 
@@ -3467,6 +3490,14 @@ CREATE UNIQUE INDEX "organization_role_permissions_org_id_role_id_module_id_perm
 
 
 CREATE UNIQUE INDEX "organizations_slug_key" ON "public"."organizations" USING "btree" ("slug");
+
+
+
+CREATE INDEX "otp_verifications_email_purpose_idx" ON "public"."otp_verifications" USING "btree" ("email", "purpose");
+
+
+
+CREATE INDEX "otp_verifications_expires_at_idx" ON "public"."otp_verifications" USING "btree" ("expires_at");
 
 
 
