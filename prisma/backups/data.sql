@@ -4,7 +4,7 @@ SET session_replication_role = replica;
 -- PostgreSQL database dump
 --
 
--- \restrict PRg6Rk1wXS6230Xfv6KnVHpehON1TfDg4TWJNlXShpRP5glC011RJLq3QWNX7pQ
+-- \restrict rWv5CVogEeLO8aW8I2hxsEL0eWjWtvcdechWAVYBAbRUz7OxPSqN75Ig0ie2f1S
 
 -- Dumped from database version 17.4
 -- Dumped by pg_dump version 17.6
@@ -8366,7 +8366,15 @@ whitelabelled-agency	whitelabelled-agency	\N	2025-06-10 10:15:13.019445+00	2025-
 -- Data for Name: buckets_analytics; Type: TABLE DATA; Schema: storage; Owner: supabase_storage_admin
 --
 
-COPY "storage"."buckets_analytics" ("id", "type", "format", "created_at", "updated_at") FROM stdin;
+COPY "storage"."buckets_analytics" ("name", "type", "format", "created_at", "updated_at", "id", "deleted_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: buckets_vectors; Type: TABLE DATA; Schema: storage; Owner: supabase_storage_admin
+--
+
+COPY "storage"."buckets_vectors" ("id", "type", "created_at", "updated_at") FROM stdin;
 \.
 
 
@@ -8615,6 +8623,14 @@ COPY "storage"."s3_multipart_uploads_parts" ("id", "upload_id", "size", "part_nu
 
 
 --
+-- Data for Name: vector_indexes; Type: TABLE DATA; Schema: storage; Owner: supabase_storage_admin
+--
+
+COPY "storage"."vector_indexes" ("id", "name", "bucket_id", "data_type", "dimension", "distance_metric", "metadata_configuration", "created_at", "updated_at") FROM stdin;
+\.
+
+
+--
 -- Data for Name: hooks; Type: TABLE DATA; Schema: supabase_functions; Owner: supabase_functions_admin
 --
 
@@ -8743,6 +8759,6 @@ SELECT pg_catalog.setval('"supabase_functions"."hooks_id_seq"', 103, true);
 -- PostgreSQL database dump complete
 --
 
--- \unrestrict PRg6Rk1wXS6230Xfv6KnVHpehON1TfDg4TWJNlXShpRP5glC011RJLq3QWNX7pQ
+-- \unrestrict rWv5CVogEeLO8aW8I2hxsEL0eWjWtvcdechWAVYBAbRUz7OxPSqN75Ig0ie2f1S
 
 RESET ALL;
